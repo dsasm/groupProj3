@@ -10,19 +10,19 @@ import org.springframework.stereotype.Service;
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
-import MovingAverage.MovingAverageDifferenceCalculator;
+import MovingAverage.MovingAveragePercentageDifferenceCalculator;
 
 @Service
 public class FlatMovingAverageApplier {
 	
 	private RestClientInteractor clientInteractor;
 	private TaskExecutor task; 
-	private MovingAverageDifferenceCalculator movingAverageDifferenceCalculator;
+	private MovingAveragePercentageDifferenceCalculator movingAverageDifferenceCalculator;
 	
 	@Autowired
 	public FlatMovingAverageApplier(RestClientInteractor clientInteractor
 			, TaskExecutor taskExecutor
-			, MovingAverageDifferenceCalculator movingAverageDifferenceCalculator) {
+			, MovingAveragePercentageDifferenceCalculator movingAverageDifferenceCalculator) {
 		this.clientInteractor = clientInteractor;
 		this.task = taskExecutor;
 		this.movingAverageDifferenceCalculator = movingAverageDifferenceCalculator;
