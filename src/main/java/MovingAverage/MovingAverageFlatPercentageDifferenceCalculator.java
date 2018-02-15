@@ -3,18 +3,17 @@ package MovingAverage;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
 
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
-public class MovingAveragePercentageDifferenceCalculator {
+public class MovingAverageFlatPercentageDifferenceCalculator implements MovingAverageDifferenceCalculator{
 
 	private RestClientInteractor clientInteractor;
 	
 	@Autowired
-	public MovingAveragePercentageDifferenceCalculator(RestClientInteractor clientInteractor) {
+	public MovingAverageFlatPercentageDifferenceCalculator(RestClientInteractor clientInteractor) {
 		this.clientInteractor = clientInteractor;
 	}
 	
@@ -26,7 +25,8 @@ public class MovingAveragePercentageDifferenceCalculator {
 	 * @param smallerInterval		- The smaller interval of time
 	 * @return						- The Difference between these moving averages
 	 */
-	public Float calculateLightWeight(String symbol, CandlestickInterval largerInterval, CandlestickInterval smallerInterval) {
+	@Override
+	public Float calculateLightweight(String symbol, CandlestickInterval largerInterval, CandlestickInterval smallerInterval) {
 		List<Candlestick> largerCandlesticks = clientInteractor.getCandlesticks(symbol, largerInterval);
 		Candlestick latestCandlestick = largerCandlesticks.get(largerCandlesticks.size()-1);
 		Float largerMovingAverage = MovingAverageUtils.fourPointAverageFlat(latestCandlestick);
@@ -46,7 +46,8 @@ public class MovingAveragePercentageDifferenceCalculator {
 	 * @param smallerInterval		- The smaller interval of time
 	 * @return						- The Difference between these moving averages
 	 */
-	public Float calculateHeavyWeight(String symbol, CandlestickInterval largerInterval, CandlestickInterval smallerInterval) {
+	@Override
+	public Float calculateHeavyweight(String symbol, CandlestickInterval largerInterval, CandlestickInterval smallerInterval) {
 		List<Candlestick> largerCandlesticks = clientInteractor.getCandlesticks(symbol, largerInterval);
 		
 		
