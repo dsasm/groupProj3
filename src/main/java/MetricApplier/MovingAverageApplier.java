@@ -41,7 +41,7 @@ public class MovingAverageApplier implements MetricApplier{
 					Float value = movingAverageDifferenceCalculator.calculateLightweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
 					
 					//And put the movingAverage in the map next to its coin symbol
-					SymbolVsMetricMap.put(symbol, value);
+					SymbolVsMetricSortedList.put(symbol, value);
 					
 				}
 			}
