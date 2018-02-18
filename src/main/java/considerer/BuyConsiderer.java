@@ -1,6 +1,6 @@
-package buyApplier;
+package considerer;
 
-public interface BuyApplier {
+public interface BuyConsiderer {
 	
 	public boolean shouldBuyNow(String symbolToConsider);
 }

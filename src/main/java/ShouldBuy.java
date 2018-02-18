@@ -1,10 +1,7 @@
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import com.surf.dsasm.Rework.client.RestClientInteractor;
-
-import buyApplier.BuyApplier;
+import considerer.BuyConsiderer;
 
 @Component
 public class ShouldBuy {
@@ -12,12 +9,12 @@ public class ShouldBuy {
 	private boolean setThreadIndex = false;
 	private Integer threadIndex;
 	
-	private BuyApplier buyApplier;
+	private BuyConsiderer buyConsiderer;
 	
 	
 	@Autowired
-	public ShouldBuy(BuyApplier buyApplier) {
-		this.buyApplier = buyApplier;
+	public ShouldBuy(BuyConsiderer buyConsiderer) {
+		this.buyConsiderer = buyConsiderer;
 	}
 	
 	public void setThreadIndex(Integer threadIndex) {
@@ -35,7 +32,7 @@ public class ShouldBuy {
 		while(true) {
 			String consideringSymbol = ThreadCoinHolders.getSymbol(threadIndex);
 		
-			boolean buyNow = buyApplier.shouldBuyNow(consideringSymbol);
+			boolean buyNow = buyConsiderer.shouldBuyNow(consideringSymbol);
 			if (buyNow) CoinsToBuyHolder.addCoinToBuy(threadIndex, consideringSymbol);
 			else {
 				Thread.sleep(1000);

@@ -29,7 +29,6 @@ public class RestClientInteractor {
 	 * @return		- The {@code List} of Symbols
 	 */
 	public List<String> getListOfSymbols() {
-		
 		return client.getAllPrices().stream()
 					.map(price -> price.getSymbol())
 					.collect(Collectors.toList());
@@ -37,5 +36,9 @@ public class RestClientInteractor {
 	
 	public List<Candlestick> getCandlesticks(String symbol, CandlestickInterval interval){
 		return null;
+	}
+	
+	public Float getLatestPrice(String thisSymbol) {
+		return Float.valueOf(client.get24HrPriceStatistics(thisSymbol).getLastPrice());
 	}
 }

@@ -1,6 +1,9 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import considerer.BoughtCoinsHolder;
+import model.BoughtInfo;
+
 @Component
 public class ShouldSell {
 	
@@ -32,7 +35,9 @@ public class ShouldSell {
 			}
 			while(true) {
 				String buyingSymbol = CoinsToBuyHolder.popMyCoin(threadIndex);
-				buyer.buy(buyingSymbol);
+				BoughtInfo bought = buyer.buy(buyingSymbol);
+				BoughtCoinsHolder.putBought(threadIndex,bought);
+				
 				boolean sellNow = sellConsiderer.shouldSellNow(buyingSymbol);
 				if (sellNow) CoinsToBuyHolder.addCoinToBuy(threadIndex, buyingSymbol);
 				else {

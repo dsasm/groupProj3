@@ -1,5 +1,6 @@
+import model.BoughtInfo;
 
 public interface Buyer {
 	
-	public void buy(String symbol);
+	public BoughtInfo buy(String symbol);
 }
