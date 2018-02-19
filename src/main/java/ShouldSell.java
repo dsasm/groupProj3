@@ -29,27 +29,42 @@ public class ShouldSell {
 	}
 	
 	public void execute() throws InterruptedException {
+		//ThreadIndex only set once the initialization is complete
 		while(!setThreadIndex) {
 			
 		}
 		while(true) {
+			
+			//While theres no coin to buy do nothing
 			while (CoinsToBuyHolder.indexIsNull(threadIndex)) {
 				
 			}
+			//There is now a coin to buy, so pop it (removes from the list)
 			String buyingSymbol = CoinsToBuyHolder.popMyCoin(threadIndex);
+			//Buy that coin
 			BoughtInfo bought = buyer.buy(buyingSymbol);
+			//Put the fact it was Bought into a Bought coins holder TODO does this need to be removed ??
 			BoughtCoinsHolder.putBought(threadIndex,bought);
-			//TODO sort out this updating the boughtInfo with new relational information when considering if to sell
+			
+			//Bought now so set the fact it should sell to false
 			boolean shouldSell = false;
 			
+			//And while it shouldnt be sold
 			while (!shouldSell) {
+				
+				//Update the info of the Order to whether or not it should be sold now
 				bought = sellConsiderer.shouldSellNow(bought);
+				
+				//assign the while variable to whether or not it should be sold now
 				shouldSell = bought.isShouldSell();
+				
+				//if not, wait a while before checking again
 				if (!shouldSell) {
 					Thread.sleep(30*1000);
 				}
 			}
-			 
+			
+			//Got here, so wants to be sold. So sell.
 			seller.sell(bought);
 		}
 		
