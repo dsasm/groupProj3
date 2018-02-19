@@ -6,14 +6,28 @@ public class BoughtInfo {
 	private Float boughtAt;
 	private Float highestProfit;
 	private boolean passedThreshhold;
+	private boolean shouldSell;
 	private Integer quantity;
 	
-	public BoughtInfo(String symbol, Float boughtAt, Float highestProfit,  boolean passedThreshhold, Integer quantity) {
+	public BoughtInfo(String symbol, Float boughtAt, Float highestProfit,  boolean passedThreshhold, Integer quantity, boolean shouldSell) {
 		this.symbol = symbol;
 		this.boughtAt = boughtAt;
 		this.highestProfit = highestProfit;
 		this.passedThreshhold = passedThreshhold;
 		this.quantity = quantity;
+		this.shouldSell = shouldSell;
+	}
+
+	public boolean isShouldSell() {
+		return shouldSell;
+	}
+
+	public void setShouldSell(boolean shouldSell) {
+		this.shouldSell = shouldSell;
+	}
+
+	public BoughtInfo() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public boolean isPassedThreshhold() {

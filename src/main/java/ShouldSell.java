@@ -12,12 +12,15 @@ public class ShouldSell {
 	
 	private SellConsiderer sellConsiderer;
 	private Buyer buyer;
+	private Seller seller;
 	
 	@Autowired
 	public ShouldSell(SellConsiderer sellConsiderer
-			, Buyer buyer) {
+			, Buyer buyer
+			, Seller seller) {
 		this.sellConsiderer = sellConsiderer;
 		this.buyer = buyer;
+		this.seller = seller;
 	}
 	
 	public void setThreadIndex(Integer threadIndex) {
@@ -33,17 +36,21 @@ public class ShouldSell {
 			while (CoinsToBuyHolder.indexIsNull(threadIndex)) {
 				
 			}
-			while(true) {
-				String buyingSymbol = CoinsToBuyHolder.popMyCoin(threadIndex);
-				BoughtInfo bought = buyer.buy(buyingSymbol);
-				BoughtCoinsHolder.putBought(threadIndex,bought);
-				
-				boolean sellNow = sellConsiderer.shouldSellNow(buyingSymbol);
-				if (sellNow) CoinsToBuyHolder.addCoinToBuy(threadIndex, buyingSymbol);
-				else {
-					Thread.sleep(1000);
+			String buyingSymbol = CoinsToBuyHolder.popMyCoin(threadIndex);
+			BoughtInfo bought = buyer.buy(buyingSymbol);
+			BoughtCoinsHolder.putBought(threadIndex,bought);
+			//TODO sort out this updating the boughtInfo with new relational information when considering if to sell
+			boolean shouldSell = false;
+			
+			while (!shouldSell) {
+				bought = sellConsiderer.shouldSellNow(bought);
+				shouldSell = bought.isShouldSell();
+				if (!shouldSell) {
+					Thread.sleep(30*1000);
 				}
 			}
+			 
+			seller.sell(bought);
 		}
 		
 	}
