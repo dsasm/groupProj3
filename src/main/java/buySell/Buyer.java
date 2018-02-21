@@ -1,3 +1,4 @@
+package buySell;
 import model.BoughtInfo;
 
 public interface Buyer {

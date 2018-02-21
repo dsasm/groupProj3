@@ -1,3 +1,4 @@
+package Holders;
 
 public class CoinsToBuyHolder {
 	

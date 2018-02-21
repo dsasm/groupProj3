@@ -1,6 +1,10 @@
+package buySell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import Holders.CoinsToBuyHolder;
 import considerer.BoughtCoinsHolder;
 import model.BoughtInfo;
 
@@ -13,6 +17,8 @@ public class ShouldSell {
 	private SellConsiderer sellConsiderer;
 	private Buyer buyer;
 	private Seller seller;
+	
+	private Logger logger = LoggerFactory.getLogger(ShouldSell.class);
 	
 	@Autowired
 	public ShouldSell(SellConsiderer sellConsiderer
@@ -45,7 +51,7 @@ public class ShouldSell {
 			BoughtInfo bought = buyer.buy(buyingSymbol);
 			//Put the fact it was Bought into a Bought coins holder TODO does this need to be removed ??
 			BoughtCoinsHolder.putBought(threadIndex,bought);
-			
+			logger.info("Bought "+buyingSymbol+" within thread "+threadIndex);
 			//Bought now so set the fact it should sell to false
 			boolean shouldSell = false;
 			
@@ -66,6 +72,7 @@ public class ShouldSell {
 			
 			//Got here, so wants to be sold. So sell.
 			seller.sell(bought);
+			logger.info("Sold "+buyingSymbol+" within thread "+threadIndex);
 		}
 		
 	}

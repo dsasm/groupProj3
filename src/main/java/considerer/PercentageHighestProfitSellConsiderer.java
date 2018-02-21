@@ -1,10 +1,13 @@
 package considerer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
+import buySell.SellConsiderer;
 import model.BoughtInfo;
 
 @Component
@@ -12,6 +15,7 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 	
 	private RestClientInteractor clientInteractor;
 	private Integer holdingIndex;
+	private Logger logger = LoggerFactory.getLogger(PercentageHighestProfitSellConsiderer.class);
 	
 	@Autowired
 	public PercentageHighestProfitSellConsiderer(RestClientInteractor clientInteractor) {
@@ -20,39 +24,6 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 	
 	public void SetThreadIndex(Integer index) {
 		this.holdingIndex = index;
-	}
-	
-	@Override
-	public boolean shouldSellNow(String symbolToConsider) {
-		
-				
-		//work out the difference between the original price and the price now
-		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
-		BoughtInfo currentInfo = BoughtCoinsHolder.getBought(holdingIndex);
-		//highest profit so far is stored as the difference between the price then and the original price
-		if (currentInfo.getHighestProfit() / currentInfo.getBoughtAt() > 1.002) currentInfo.setPassedThreshhold(true);; 
-
-		if (priceDiff > currentInfo.getHighestProfit()) currentInfo.setHighestProfit(priceDiff);
-		
-		//if the difference is bigger than the % decreace allowed for a coin then SELL SELL SELL
-		if(currentInfo.isPassedThreshhold() && (currentInfo.getHighestProfit() / currentInfo.getBoughtAt() < 1.002)) return true;
-
-		else if ((priceDiff-currentInfo.getBoughtAt()) /currentInfo.getHighestProfitDiff() < 0.97) return true;
-		else if(priceDiff < (currentInfo.getBoughtAt()*0.98)) {
-			return true;
-		}
-		
-		else if (priceDiff < ((currentInfo.getHighestProfitDiff()*0.95)+currentInfo.getBoughtAt() )
-				&& ((priceDiff-currentInfo.getBoughtAt()) /(currentInfo.getHighestProfit()) > 0.985) ) {
-		    //TODO implement 	getConfidenceInMove();
-			return gainConfidenceInSell(priceDiff, currentInfo.getSymbol(), 0);
-		}
-		//if the new price is bigger than the highestProfitSoFar then replace the highestProfit so far
-				
-				
-			
-		
-		return false;
 	}
 	
 	private boolean gainConfidenceInSell(Float basedOn, String symbol, int count) {
@@ -76,6 +47,47 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 		}
 		else{
 			return false;}
+	}
+
+	@Override
+	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo) {
+		String symbolToConsider = boughtInfo.getSymbol();
+		//work out the difference between the original price and the price now
+		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
+		BoughtInfo currentInfo = BoughtCoinsHolder.getBought(holdingIndex);
+		//highest profit so far is stored as the difference between the price then and the original price
+		if (currentInfo.getHighestProfit() / currentInfo.getBoughtAt() > 1.002) currentInfo.setPassedThreshhold(true);; 
+
+		if (priceDiff > currentInfo.getHighestProfit()) currentInfo.setHighestProfit(priceDiff);
+		
+		//if the difference is bigger than the % decreace allowed for a coin then SELL SELL SELL
+		if(currentInfo.isPassedThreshhold() && (currentInfo.getHighestProfit() / currentInfo.getBoughtAt() < 1.002)) {
+			boughtInfo.setShouldSell(true);
+			return boughtInfo;
+		}
+
+		else if ((priceDiff-currentInfo.getBoughtAt()) /currentInfo.getHighestProfitDiff() < 0.97) {
+			boughtInfo.setShouldSell(true);
+			return boughtInfo;
+		}
+		else if(priceDiff < (currentInfo.getBoughtAt()*0.98)) {
+			boughtInfo.setShouldSell(true);
+			return boughtInfo;
+		}
+		
+		else if (priceDiff < ((currentInfo.getHighestProfitDiff()*0.95)+currentInfo.getBoughtAt() )
+				&& ((priceDiff-currentInfo.getBoughtAt()) /(currentInfo.getHighestProfit()) > 0.985) ) {
+		    //TODO implement 	getConfidenceInMove();
+			boughtInfo.setShouldSell(gainConfidenceInSell(priceDiff, currentInfo.getSymbol(), 0));
+			return boughtInfo;
+		}
+		//if the new price is bigger than the highestProfitSoFar then replace the highestProfit so far
+				
+				
+			
+		
+		boughtInfo.setShouldSell(false);
+		return boughtInfo;
 	}
 	
 	

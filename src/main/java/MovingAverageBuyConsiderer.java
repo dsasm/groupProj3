@@ -8,7 +8,7 @@ import com.binance.api.client.domain.market.CandlestickInterval;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
 import MovingAverage.MovingAverageDifferenceCalculator;
-import considerer.BuyConsiderer;
+import buySell.BuyConsiderer;
 
 public class MovingAverageBuyConsiderer implements BuyConsiderer {
 	

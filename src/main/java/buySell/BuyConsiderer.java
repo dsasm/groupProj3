@@ -1,4 +1,4 @@
-package considerer;
+package buySell;
 
 public interface BuyConsiderer {
 	
