@@ -31,9 +31,11 @@ public class ShouldBuy {
 		while(!setThreadIndex) {
 			
 		}
+		logger.info("Buyer Has Index Set");
 		while (ThreadCoinHolders.isNull(threadIndex)) {
 			
 		}
+		logger.info("Buyer coinHolder no longer null");
 		while(true) {
 			String consideringSymbol = ThreadCoinHolders.getSymbol(threadIndex);
 		

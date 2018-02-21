@@ -37,13 +37,14 @@ public class MovingAverageApplier implements MetricApplier, TaskExecutor{
 				logger.info("Starting Loop");
 				//For each coin
 				for(String symbol : clientInteractor.getListOfSymbols()) {
-					
-					//Get the movingAverage
-					Float value = movingAverageDifferenceCalculator.calculateLightweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
-					
-					//And put the movingAverage in the map next to its coin symbol
-					SymbolVsMetricSortedList.put(symbol, value);
-					
+					if (symbol.endsWith("ETH")) {
+						//Get the movingAverage
+						Float value = movingAverageDifferenceCalculator.calculateLightweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
+						
+						//And put the movingAverage in the map next to its coin symbol
+						SymbolVsMetricSortedList.put(symbol, value);
+						logger.info("Done coin "+symbol);
+					}
 				}
 				logger.info("Completed a loop of lightWeight metric application");
 			}

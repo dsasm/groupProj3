@@ -28,13 +28,13 @@ public class ThreadStarter {
 		logger.info("Executed Metric Applier");
 		for (int i = 0 ; i < shouldBuy.length; i++) {
 			shouldBuy[i].setThreadIndex(i);
-			logger.info("Set up new Buyer");
 			try {
 				shouldBuy[i].execute();
+				logger.info("Set up new Buyer");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				logger.info("Failed to set up Seller");
+				logger.info("Failed to set up Buyer");
 			}
 		}
 		
