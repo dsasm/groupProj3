@@ -30,7 +30,7 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 
 	@Override
 	public boolean shouldBuyNow(String symbolToConsider) {
-		Float MADiff = movingAverageDifferenceCalculator.calculateHeavyweight(symbolToConsider, CandlestickInterval.FIFTEEN_MINUTES, CandlestickInterval.FIVE_MINUTES);
+		Float MADiff = movingAverageDifferenceCalculator.calculateLightweight(symbolToConsider, CandlestickInterval.FIFTEEN_MINUTES, CandlestickInterval.FIVE_MINUTES);
 		List<Candlestick> candlesticks2 = clientInteractor.getCandlesticks(symbolToConsider, CandlestickInterval.FIVE_MINUTES);
 		Float latestOpen = Float.valueOf(candlesticks2.get(candlesticks2.size() - 1).getOpen());
 		Float latestClose = Float.valueOf(candlesticks2.get(candlesticks2.size() - 1).getClose());
@@ -74,7 +74,7 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 			if (confArray.get(i)) confCounter++;
 		}
 		logger.info(" returning : "+confCounter);
-		return (confCounter == 3);
+		return (confCounter >= 2);
 	}
 	
 }

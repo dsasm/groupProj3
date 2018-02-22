@@ -11,7 +11,7 @@ import com.surf.dsasm.Rework.client.RestClientInteractor;
 
 import MovingAverage.MovingAverageDifferenceCalculator;
 @Service
-public class MovingAverageApplier implements MetricApplier, TaskExecutor{
+public class MovingAverageApplier implements MetricApplier{
 	
 	private RestClientInteractor clientInteractor;
 	private MovingAverageDifferenceCalculator movingAverageDifferenceCalculator;
@@ -25,36 +25,27 @@ public class MovingAverageApplier implements MetricApplier, TaskExecutor{
 		this.movingAverageDifferenceCalculator = movingAverageDifferenceCalculator;
 	}
 	
-	public void execute() {
-
-		logger.info("Starting up");
-		execute(new Runnable(){
-			
-			
-			
-			@Override
-			public void run() {
-				logger.info("Starting Loop");
-				//For each coin
-				for(String symbol : clientInteractor.getListOfSymbols()) {
-					if (symbol.endsWith("ETH")) {
-						//Get the movingAverage
-						Float value = movingAverageDifferenceCalculator.calculateLightweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
-						
-						//And put the movingAverage in the map next to its coin symbol
-						SymbolVsMetricSortedList.put(symbol, value);
-						logger.info("Done coin "+symbol);
-					}
-				}
-				logger.info("Completed a loop of lightWeight metric application");
-			}
-			
-		});
-	}
-
 	@Override
-	public void execute(Runnable arg0) {
-		arg0.run();
+	public void run() {
+		// logger.info("Starting Loop");
+		//For each coin
+		while (true) {
+			for(String symbol : clientInteractor.getListOfSymbols()) {
+				if (symbol.endsWith("ETH")) {
+					//Get the movingAverage
+					Float value = movingAverageDifferenceCalculator.calculateLightweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
+					
+					//And put the movingAverage in the map next to its coin symbol
+					SymbolVsMetricSortedList.put(symbol, value);
+					logger.info("Done coin "+symbol + " Value: "+value);
+				}
+				
+			}
+			SymbolVsMetricSortedList.setReady(true);
+			logger.info("Completed a loop of lightWeight metric application");
+
+		}
+		
 	}
 	
 	

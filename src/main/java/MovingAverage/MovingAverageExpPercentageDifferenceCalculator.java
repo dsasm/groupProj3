@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.Utils.CandlestickIntervalUtils;
+import com.surf.dsasm.Utils.CandlestickUtils;
 
 public class MovingAverageExpPercentageDifferenceCalculator implements MovingAverageDifferenceCalculator{
 
@@ -52,9 +54,13 @@ public class MovingAverageExpPercentageDifferenceCalculator implements MovingAve
 	public Float calculateHeavyweight(String symbol, CandlestickInterval largerInterval,
 			CandlestickInterval smallerInterval) {
 		
-		List<Candlestick> largerCandlesticks = clientInteractor.getCandlesticks(symbol, largerInterval);
+		List<Candlestick> largerCandlesticks = clientInteractor.getCandlesticks(symbol, CandlestickInterval.ONE_MINUTE);
+		Float largerAverage = CandlestickUtils.heavyWeightAverage(largerCandlesticks, largerInterval);
+		
+		List<Candlestick> smallerCandlesticks = clientInteractor.getCandlesticks(symbol, CandlestickInterval.ONE_MINUTE);
+		Float smallerAverage = CandlestickUtils.heavyWeightAverage(smallerCandlesticks, smallerInterval);
 		
 		
-		return 0f;
+		return (smallerAverage/ largerAverage)*100;
 	}
 }

@@ -9,7 +9,7 @@ import considerer.BoughtCoinsHolder;
 import model.BoughtInfo;
 
 @Component
-public class ShouldSell {
+public class ShouldSell implements Runnable{
 	
 	private boolean setThreadIndex = false;
 	private Integer threadIndex;
@@ -20,7 +20,6 @@ public class ShouldSell {
 	
 	private Logger logger = LoggerFactory.getLogger(ShouldSell.class);
 	
-	@Autowired
 	public ShouldSell(SellConsiderer sellConsiderer
 			, Buyer buyer
 			, Seller seller) {
@@ -33,12 +32,14 @@ public class ShouldSell {
 		this.threadIndex = threadIndex;
 		setThreadIndex = true;
 	}
-	
-	public void execute() throws InterruptedException {
+
+	@Override
+	public void run() {
 		//ThreadIndex only set once the initialization is complete
 		while(!setThreadIndex) {
 			
 		}
+		logger.info("Seller starting up with index "+threadIndex);
 		while(true) {
 			
 			//While theres no coin to buy do nothing
@@ -66,7 +67,12 @@ public class ShouldSell {
 				
 				//if not, wait a while before checking again
 				if (!shouldSell) {
-					Thread.sleep(30*1000);
+					try {
+						Thread.sleep(30*1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 			
@@ -74,6 +80,6 @@ public class ShouldSell {
 			seller.sell(bought);
 			logger.info("Sold "+buyingSymbol+" within thread "+threadIndex);
 		}
-		
+
 	}
 }

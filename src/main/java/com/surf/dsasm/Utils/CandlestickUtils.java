@@ -1,7 +1,12 @@
 package com.surf.dsasm.Utils;
 
+import java.util.List;
+
 import com.binance.api.client.domain.event.CandlestickEvent;
 import com.binance.api.client.domain.market.Candlestick;
+import com.binance.api.client.domain.market.CandlestickInterval;
+
+import MovingAverage.MovingAverageUtils;
 
 public class CandlestickUtils {
 	
@@ -18,5 +23,14 @@ public class CandlestickUtils {
 		toReturn.setTakerBuyBaseAssetVolume(response.getTakerBuyBaseAssetVolume());
 		toReturn.setTakerBuyQuoteAssetVolume(response.getTakerBuyQuoteAssetVolume());
 		return toReturn;
+	}
+	
+	public static Float heavyWeightAverage(List<Candlestick> candlesticks, CandlestickInterval interval) {
+		Float largerSum = 0f;
+		for (int i = candlesticks.size() -1; i > candlesticks.size() -1-CandlestickIntervalUtils.timeInMinutes(interval); i--) {
+			largerSum += MovingAverageUtils.fourPointAverageFlat(candlesticks.get(i));
+		}
+		return largerSum / CandlestickIntervalUtils.timeInMinutes(interval);
+		
 	}
 }

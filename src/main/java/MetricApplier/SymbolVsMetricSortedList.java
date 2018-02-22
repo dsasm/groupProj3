@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import model.SymbolMetric;
 
 /**
@@ -16,6 +19,9 @@ import model.SymbolMetric;
 public class SymbolVsMetricSortedList{
 	
 	private static List<SymbolMetric> symbolVsMetric = new LinkedList<SymbolMetric>();
+	private static boolean ready = false;
+	
+	static Logger logger = LoggerFactory.getLogger(SymbolVsMetricSortedList.class);
 	
 	/**
 	 * Thread-safely adds a Symbol / Value pair to the symbolVsMetric Map
@@ -61,4 +67,8 @@ public class SymbolVsMetricSortedList{
 		}
 		return toReturn;
 	}
+	
+	public static void setReady(boolean ready) { SymbolVsMetricSortedList.ready = ready; 
+			logger.info("Now Ready");}
+	public static boolean isReady() {return ready;}
 }

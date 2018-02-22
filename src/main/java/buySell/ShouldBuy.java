@@ -2,13 +2,15 @@ package buySell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import Holders.CoinsToBuyHolder;
 import Holders.ThreadCoinHolders;
 
 @Component
-public class ShouldBuy {
+public class ShouldBuy implements Runnable{
 	
 	private boolean setThreadIndex = false;
 	private Integer threadIndex;
@@ -17,7 +19,7 @@ public class ShouldBuy {
 	private Logger logger = LoggerFactory.getLogger(ShouldBuy.class);
 	
 	
-	@Autowired
+
 	public ShouldBuy(BuyConsiderer buyConsiderer) {
 		this.buyConsiderer = buyConsiderer;
 	}
@@ -27,11 +29,13 @@ public class ShouldBuy {
 		setThreadIndex = true;
 	}
 
-	public void execute() throws InterruptedException {
+	@Override
+	public void run() {
 		while(!setThreadIndex) {
+			logger.info("+++++ Buyer STUCK FOR SOME REASON ");
 			
 		}
-		logger.info("Buyer Has Index Set");
+		logger.info("+++++ Buyer Has Index Set "+threadIndex);
 		while (ThreadCoinHolders.isNull(threadIndex)) {
 			
 		}
@@ -45,9 +49,15 @@ public class ShouldBuy {
 				logger.info("Wants to buy "+consideringSymbol+" from thread "+threadIndex);
 			}
 			else {
-				Thread.sleep(1000);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
+		
 		
 	}
 	
