@@ -50,8 +50,18 @@ public class ThreadCoinHolders implements Runnable{
 					symbolMetrics[i] = new SymbolMetricBought(thisMetric);
 				}
 				else {
+					
+					//Ensure that this new metric isn't a symbol already being considered
+					boolean inList = false;
 					for (int j = 0; j < symbolMetrics.length; j++) {
-						if (symbolMetrics[j].getSymbolMetric().getMetric() > thisMetric.getMetric()) {
+						if (symbolMetrics[j].getSymbolMetric().getSymbol().equals(thisMetric.getSymbol())) {
+							inList = true;
+						}
+					}
+					
+					
+					for (int j = 0; j < symbolMetrics.length; j++) {
+						if (symbolMetrics[j].getSymbolMetric().getMetric() > thisMetric.getMetric() && !inList) {
 							symbolMetrics[j] = new SymbolMetricBought(thisMetric);
 							logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
 						}

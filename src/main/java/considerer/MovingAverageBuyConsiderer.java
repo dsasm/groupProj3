@@ -53,6 +53,7 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 				e.printStackTrace();
 			}
 			Float newPrice = new Float(clientInteractor.getLatestPrice(thisSymbol));
+			logger.info("New price "+thisSymbol+" : "+newPrice);
 			Float percDiff = newPrice / priceBasedOn * 100;
 			if (percDiff > 100.05) {
 				logger.info("CoinWatcher - "+thisSymbol+" - Confidence Gained with new Price "+newPrice);

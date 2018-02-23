@@ -47,6 +47,14 @@ public class ShouldBuy implements Runnable{
 			if (buyNow) {
 				CoinsToBuyHolder.addCoinToBuy(threadIndex, consideringSymbol);
 				logger.info("Wants to buy "+consideringSymbol+" from thread "+threadIndex);
+				while (!CoinsToBuyHolder.indexIsNull(threadIndex)) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 			else {
 				try {
@@ -56,6 +64,7 @@ public class ShouldBuy implements Runnable{
 					e.printStackTrace();
 				}
 			}
+			
 		}
 		
 		

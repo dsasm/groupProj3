@@ -32,6 +32,12 @@ public class SymbolVsMetricSortedList{
 		synchronized (symbolVsMetric) {
 			symbolVsMetric.add(new SymbolMetric(symbol,value));
 			symbolVsMetric = symbolVsMetric.stream()
+				.map((symbolMetric) -> {
+					if (symbolMetric.getSymbol().equals(symbol)) {
+						symbolMetric.setMetric(value);
+					}
+					return symbolMetric;
+				})
 				.sorted((left, right) -> {return left.compareTo(right);})
 				.collect(Collectors.toList());
 		}
