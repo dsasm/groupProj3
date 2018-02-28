@@ -22,10 +22,6 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 		this.clientInteractor = clientInteractor;
 	}
 	
-	public void SetThreadIndex(Integer index) {
-		this.holdingIndex = index;
-	}
-	
 	private boolean gainConfidenceInSell(Float basedOn, String symbol, int count) {
 		//wait a half minute then check if it has increased, then buy
 		//wait a half minute then check if it has increased, then buy
@@ -55,6 +51,7 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 		//work out the difference between the original price and the price now
 		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = BoughtCoinsHolder.getBought(holdingIndex);
+		logger.info("Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff);
 		//highest profit so far is stored as the difference between the price then and the original price
 		if (currentInfo.getHighestProfit() / currentInfo.getBoughtAt() > 1.002) currentInfo.setPassedThreshhold(true);; 
 
@@ -85,9 +82,15 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 				
 				
 			
-		
+		logger.info("Won't sell " +symbolToConsider+" has not met any conditions");
 		boughtInfo.setShouldSell(false);
 		return boughtInfo;
+	}
+
+	@Override
+	public void setThreadIndex(Integer threadIndex) {
+		this.holdingIndex = threadIndex;
+		
 	}
 	
 	

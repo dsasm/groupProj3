@@ -1,7 +1,6 @@
 package buySell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import Holders.CoinsToBuyHolder;
@@ -30,6 +29,7 @@ public class ShouldSell implements Runnable{
 	
 	public void setThreadIndex(Integer threadIndex) {
 		this.threadIndex = threadIndex;
+		this.sellConsiderer.setThreadIndex(threadIndex);
 		setThreadIndex = true;
 	}
 

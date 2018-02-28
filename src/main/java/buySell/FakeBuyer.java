@@ -21,6 +21,8 @@ public class FakeBuyer implements Buyer{
 		BoughtInfo toReturn = new BoughtInfo();
 		Float boughtAt = clientInteractor.getLatestPrice(symbol);
 		toReturn.setBoughtAt(boughtAt);
+		toReturn.setSymbol(symbol);
+		toReturn.setHighestProfit(boughtAt);
 		return FakeEthereumHolder.newBuy(toReturn);
 		
 	}
