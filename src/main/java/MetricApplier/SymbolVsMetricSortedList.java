@@ -1,9 +1,7 @@
 package MetricApplier;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -30,16 +28,20 @@ public class SymbolVsMetricSortedList{
 	 */
 	public static void put(String symbol, Float value) {
 		synchronized (symbolVsMetric) {
-			symbolVsMetric.add(new SymbolMetric(symbol,value));
-			symbolVsMetric = symbolVsMetric.stream()
+			
+			if (!ready) symbolVsMetric.add(new SymbolMetric(symbol,value));
+			
+			else symbolVsMetric = symbolVsMetric.stream()
 				.map((symbolMetric) -> {
 					if (symbolMetric.getSymbol().equals(symbol)) {
 						symbolMetric.setMetric(value);
 					}
 					return symbolMetric;
 				})
-				.sorted((left, right) -> {return left.compareTo(right);})
+				
 				.collect(Collectors.toList());
+			
+			symbolVsMetric.sort((left, right) -> {return right.compareTo(left);});
 		}
 	}
 	

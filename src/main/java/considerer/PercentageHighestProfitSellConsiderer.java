@@ -50,8 +50,8 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 		String symbolToConsider = boughtInfo.getSymbol();
 		//work out the difference between the original price and the price now
 		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
-		BoughtInfo currentInfo = BoughtCoinsHolder.getBought(holdingIndex);
-		logger.info("Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff);
+		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
+		logger.info("Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - highest profit "+currentInfo.getHighestProfit()+" - passedThreshhold "+currentInfo.isPassedThreshhold());
 		//highest profit so far is stored as the difference between the price then and the original price
 		if (currentInfo.getHighestProfit() / currentInfo.getBoughtAt() > 1.002) currentInfo.setPassedThreshhold(true);; 
 

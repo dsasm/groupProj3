@@ -9,21 +9,22 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import MetricApplier.SymbolVsMetricSortedList;
+import model.State;
 import model.SymbolMetric;
 import model.SymbolMetricBought;
 
 @Component
 public class ThreadCoinHolders implements Runnable{
 	
-	Logger logger = LoggerFactory.getLogger(ThreadCoinHolders.class);
+	private static Logger logger = LoggerFactory.getLogger(ThreadCoinHolders.class);
 	
 	//An array of SymbolMetricBoughts that is the same length as the number of shouldBuys / shouldSells
-	private static SymbolMetricBought [] symbolMetrics = new SymbolMetricBought[2];
+	private static SymbolMetric[] symbolMetrics = new SymbolMetric[2];
 	private static boolean ready = false;
 	public static String getSymbol(int index) {
 		String toReturn;
 		synchronized(symbolMetrics) {
-			toReturn = symbolMetrics[index].getSymbolMetric().getSymbol();
+			toReturn = symbolMetrics[index].getSymbol();
 		}
 		return toReturn;
 	}
@@ -35,6 +36,50 @@ public class ThreadCoinHolders implements Runnable{
 	}
 	public static boolean isReady() {return ready;}
 	public static void setReady(boolean readyNew) {ready = readyNew;}
+	
+	public static void shouldBuy(int threadIndex) {
+		synchronized(symbolMetrics[threadIndex]) {
+			if (symbolMetrics[threadIndex].getState().equals(State.LOOKING_AT)) {
+				symbolMetrics[threadIndex].nextState();
+				logger.info("Changed " +threadIndex+" state to "+symbolMetrics[threadIndex].getState());
+			}
+		}
+	}
+	
+	public static void buy(int threadIndex) {
+		synchronized(symbolMetrics[threadIndex]) {
+			if (symbolMetrics[threadIndex].getState().equals(State.SHOULD_BUY)) {
+				symbolMetrics[threadIndex].nextState();
+				logger.info("Changed " +threadIndex+" state to "+symbolMetrics[threadIndex].getState());
+			}
+		}
+	}
+	
+	public static void shouldSell(int threadIndex) {
+		synchronized(symbolMetrics[threadIndex]) {
+			if (symbolMetrics[threadIndex].getState().equals(State.BOUGHT)) {
+				symbolMetrics[threadIndex].nextState(); 
+				logger.info("Changed " +threadIndex+" state to "+symbolMetrics[threadIndex].getState());
+			}
+		}
+	}
+	
+	public static void sell(int threadIndex) {
+		synchronized(symbolMetrics[threadIndex]) {
+			if (symbolMetrics[threadIndex].getState().equals(State.SHOULD_SELL)) {
+				symbolMetrics[threadIndex].nextState(); 
+				logger.info("Changed " +threadIndex+" state to "+symbolMetrics[threadIndex].getState());
+				symbolMetrics[threadIndex].nextState(); 
+				logger.info("Changed " +threadIndex+" state to "+symbolMetrics[threadIndex].getState());
+			}
+		}
+	}
+	
+	public static State getState(int threadIndex) {
+		synchronized(symbolMetrics[threadIndex]) {
+			return symbolMetrics[threadIndex].getState();
+		}
+	}
 
 	@Override
 	public void run() {
@@ -42,28 +87,30 @@ public class ThreadCoinHolders implements Runnable{
 			while(!SymbolVsMetricSortedList.isReady()) {
 				
 			}
-			List<SymbolMetricBought> tempList = new LinkedList<SymbolMetricBought>();
+			List<SymbolMetric> tempList = new LinkedList<SymbolMetric>();
 			for(int i = 0; i < symbolMetrics.length; i++) {
 				
 				SymbolMetric thisMetric = SymbolVsMetricSortedList.get(i);
 				if (symbolMetrics[i] == null && !ready) {
-					symbolMetrics[i] = new SymbolMetricBought(thisMetric);
+					symbolMetrics[i] = new SymbolMetric(thisMetric);
 				}
 				else {
 					
 					//Ensure that this new metric isn't a symbol already being considered
 					boolean inList = false;
 					for (int j = 0; j < symbolMetrics.length; j++) {
-						if (symbolMetrics[j].getSymbolMetric().getSymbol().equals(thisMetric.getSymbol())) {
+						if (symbolMetrics[j].getSymbol().equals(thisMetric.getSymbol())) {
 							inList = true;
 						}
 					}
 					
 					
 					for (int j = 0; j < symbolMetrics.length; j++) {
-						if (symbolMetrics[j].getSymbolMetric().getMetric() > thisMetric.getMetric() && !inList) {
-							symbolMetrics[j] = new SymbolMetricBought(thisMetric);
-							logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
+						synchronized(symbolMetrics[j]) {
+							if (symbolMetrics[j].getMetric() > thisMetric.getMetric() && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
+								symbolMetrics[j] = new SymbolMetric(thisMetric);
+								logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
+							}
 						}
 					}
 				}

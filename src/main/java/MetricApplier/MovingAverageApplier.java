@@ -33,7 +33,7 @@ public class MovingAverageApplier implements MetricApplier{
 			for(String symbol : clientInteractor.getListOfSymbols()) {
 				if (symbol.endsWith("ETH")) {
 					//Get the movingAverage
-					Float value = movingAverageDifferenceCalculator.calculateLightweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
+					Float value = movingAverageDifferenceCalculator.calculateHeavyweight(symbol, CandlestickInterval.TWO_HOURLY, CandlestickInterval.FIFTEEN_MINUTES);
 					
 					//And put the movingAverage in the map next to its coin symbol
 					SymbolVsMetricSortedList.put(symbol, value);

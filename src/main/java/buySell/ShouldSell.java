@@ -4,8 +4,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import Holders.CoinsToBuyHolder;
+import Holders.ThreadCoinHolders;
 import considerer.BoughtCoinsHolder;
 import model.BoughtInfo;
+import model.State;
 
 @Component
 public class ShouldSell implements Runnable{
@@ -39,19 +41,24 @@ public class ShouldSell implements Runnable{
 		while(!setThreadIndex) {
 			
 		}
+		//While theres no coin to buy do nothing
+		while (ThreadCoinHolders.isNull(threadIndex)) {
+			
+		}
 		logger.info("Seller starting up with index "+threadIndex);
 		while(true) {
 			
-			//While theres no coin to buy do nothing
-			while (CoinsToBuyHolder.indexIsNull(threadIndex)) {
+			while(!ThreadCoinHolders.getState(threadIndex).equals(State.SHOULD_BUY)) {
 				
 			}
+			
 			//There is now a coin to buy, so pop it (removes from the list)
-			String buyingSymbol = CoinsToBuyHolder.popMyCoin(threadIndex);
+			String buyingSymbol = ThreadCoinHolders.getSymbol(threadIndex);
 			//Buy that coin
 			BoughtInfo bought = buyer.buy(buyingSymbol);
 			//Put the fact it was Bought into a Bought coins holder TODO does this need to be removed ??
-			BoughtCoinsHolder.putBought(threadIndex,bought);
+			ThreadCoinHolders.buy(threadIndex);
+			//BoughtCoinsHolder.putBought(threadIndex, bought);
 			logger.info("Bought "+buyingSymbol+" within thread "+threadIndex);
 			//Bought now so set the fact it should sell to false
 			boolean shouldSell = false;
@@ -77,7 +84,10 @@ public class ShouldSell implements Runnable{
 			}
 			
 			//Got here, so wants to be sold. So sell.
+			ThreadCoinHolders.shouldSell(threadIndex);
 			seller.sell(bought);
+			ThreadCoinHolders.sell(threadIndex);
+			BoughtCoinsHolder.removeMyBought(threadIndex);
 			logger.info("Sold "+buyingSymbol+" within thread "+threadIndex);
 		}
 

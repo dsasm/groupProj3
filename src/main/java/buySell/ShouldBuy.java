@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import Holders.CoinsToBuyHolder;
 import Holders.ThreadCoinHolders;
+import model.State;
 
 @Component
 public class ShouldBuy implements Runnable{
@@ -40,20 +41,23 @@ public class ShouldBuy implements Runnable{
 			logger.info("Buyer coinHolder no longer null");
 			boolean consideringBuy = true;
 			while(consideringBuy) {
+				
+				//While its coin is not in a state where you are only looking at it
+				while(!ThreadCoinHolders.getState(threadIndex).equals(State.LOOKING_AT)) {
+					
+				}
+				
+				//get that coin and check if you should buy it
 				String consideringSymbol = ThreadCoinHolders.getSymbol(threadIndex);
 			
 				boolean buyNow = buyConsiderer.shouldBuyNow(consideringSymbol);
 				if (buyNow) {
-					CoinsToBuyHolder.addCoinToBuy(threadIndex, consideringSymbol);
+					
+					
+					
+					//If you should buy it, move it to the next state within its holder
+					ThreadCoinHolders.shouldBuy(threadIndex);
 					logger.info("Wants to buy "+consideringSymbol+" from thread "+threadIndex);
-					while (!CoinsToBuyHolder.indexIsNull(threadIndex)) {
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
 				}
 				else {
 					try {

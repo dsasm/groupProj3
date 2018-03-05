@@ -32,6 +32,7 @@ public class FakeEthereumHolder {
 			
 			logger.info("Selling "+boughtInfo.getSymbol()+" for "+soldAt+ " Quantity "+boughtInfo.getQuantity());
 			numberOfEthereum = numberOfEthereum + soldAt * boughtInfo.getQuantity();
+			logger.info("total Ethereum now : "+numberOfEthereum);
 		}
 	}
 	
