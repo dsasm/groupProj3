@@ -110,6 +110,7 @@ public class ThreadCoinHolders implements Runnable{
 							if (symbolMetrics[j].getMetric() > thisMetric.getMetric() && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
 								symbolMetrics[j] = new SymbolMetric(thisMetric);
 								logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
+								break;
 							}
 						}
 					}

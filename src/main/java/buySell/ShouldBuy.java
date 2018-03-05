@@ -53,8 +53,6 @@ public class ShouldBuy implements Runnable{
 				boolean buyNow = buyConsiderer.shouldBuyNow(consideringSymbol);
 				if (buyNow) {
 					
-					
-					
 					//If you should buy it, move it to the next state within its holder
 					ThreadCoinHolders.shouldBuy(threadIndex);
 					logger.info("Wants to buy "+consideringSymbol+" from thread "+threadIndex);
