@@ -13,6 +13,8 @@ import model.SymbolMetric;
  * The point of this method is to hold the Map that will be holding data regarding coins
  * as well as enforce thread-safety by ensuring the only way to add / read / get from that same map
  * is to be synchronized 
+ * 
+ * Metric is a Generic thing, as long as its numeric it will be sorted
  */
 public class SymbolVsMetricSortedList{
 	
@@ -41,7 +43,7 @@ public class SymbolVsMetricSortedList{
 				
 				.collect(Collectors.toList());
 			
-			symbolVsMetric.sort((left, right) -> {return right.compareTo(left);});
+			symbolVsMetric.sort((left, right) -> {return left.compareTo(right);});
 		}
 	}
 	

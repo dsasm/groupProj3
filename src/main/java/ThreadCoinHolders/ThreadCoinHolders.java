@@ -1,4 +1,4 @@
-package Holders;
+package ThreadCoinHolders;
 import java.util.LinkedList;
 import java.util.List;
 

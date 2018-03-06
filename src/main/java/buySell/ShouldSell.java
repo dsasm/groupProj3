@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import Holders.CoinsToBuyHolder;
-import Holders.ThreadCoinHolders;
+import ThreadCoinHolders.ThreadCoinHolders;
 import considerer.BoughtCoinsHolder;
 import model.BoughtInfo;
 import model.State;

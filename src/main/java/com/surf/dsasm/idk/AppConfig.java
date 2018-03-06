@@ -8,11 +8,12 @@ import org.springframework.core.task.TaskExecutor;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
-import Holders.ThreadCoinHolders;
+import MetricApplier.BurstSearcher;
 import MetricApplier.MetricApplier;
 import MetricApplier.MovingAverageApplier;
 import MovingAverage.MovingAverageDifferenceCalculator;
 import MovingAverage.MovingAverageFlatPercentageDifferenceCalculator;
+import ThreadCoinHolders.ThreadCoinHolders;
 import buySell.FakeBuyer;
 import buySell.FakeSeller;
 import buySell.ShouldBuy;
@@ -23,11 +24,12 @@ import considerer.PercentageHighestProfitSellConsiderer;
 @Configuration
 @ComponentScan(basePackages={"com.surf.dsasm.Rework.client", "buySell","considerer"})
 public class AppConfig {
-
+	
+	
 	
 	@Bean
-	public MetricApplier metricApplier(RestClientInteractor clientInteractor , MovingAverageDifferenceCalculator MADiffCalc) {
-		if (App.test) return new MovingAverageApplier(clientInteractor, MADiffCalc);
+	public MetricApplier metricApplier(RestClientInteractor clientInteractor ) {
+		if (App.test) return new BurstSearcher(clientInteractor);
 		else return null;
 	}
 	

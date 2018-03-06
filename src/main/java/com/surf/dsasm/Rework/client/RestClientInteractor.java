@@ -10,6 +10,7 @@ import com.binance.api.client.BinanceApiClientFactory;
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
+import com.binance.api.client.domain.market.TickerPrice;
 
 /**
  * This is a class to contain all methods to do with directly interacting with the API
@@ -41,5 +42,9 @@ public class RestClientInteractor {
 	
 	public Float getLatestPrice(String thisSymbol) {
 		return Float.valueOf(client.get24HrPriceStatistics(thisSymbol).getLastPrice());
+	}
+	
+	public List<TickerPrice> getPrices(){
+		return client.getAllPrices();
 	}
 }
