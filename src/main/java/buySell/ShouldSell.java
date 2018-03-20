@@ -31,7 +31,6 @@ public class ShouldSell implements Runnable{
 	
 	public void setThreadIndex(Integer threadIndex) {
 		this.threadIndex = threadIndex;
-		this.sellConsiderer.setThreadIndex(threadIndex);
 		setThreadIndex = true;
 	}
 
@@ -67,7 +66,7 @@ public class ShouldSell implements Runnable{
 			while (!shouldSell) {
 				
 				//Update the info of the Order to whether or not it should be sold now
-				bought = sellConsiderer.shouldSellNow(bought);
+				bought = sellConsiderer.shouldSellNow(bought, threadIndex);
 				
 				//assign the while variable to whether or not it should be sold now
 				shouldSell = bought.isShouldSell();
@@ -75,7 +74,7 @@ public class ShouldSell implements Runnable{
 				//if not, wait a while before checking again
 				if (!shouldSell) {
 					try {
-						Thread.sleep(30*1000);
+						Thread.sleep(10*1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

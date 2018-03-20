@@ -1,24 +1,23 @@
 package com.surf.dsasm.idk;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
-
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
 import MetricApplier.BurstSearcher;
 import MetricApplier.MetricApplier;
-import MetricApplier.MovingAverageApplier;
 import MovingAverage.MovingAverageDifferenceCalculator;
 import MovingAverage.MovingAverageFlatPercentageDifferenceCalculator;
 import ThreadCoinHolders.ThreadCoinHolders;
+import buySell.BurstBuyConsiderer;
+import buySell.BurstSellConsiderer;
+import buySell.BuyConsiderer;
 import buySell.FakeBuyer;
 import buySell.FakeSeller;
+import buySell.SellConsiderer;
 import buySell.ShouldBuy;
 import buySell.ShouldSell;
-import considerer.MovingAverageBuyConsiderer;
 import considerer.PercentageHighestProfitSellConsiderer;
 
 @Configuration
@@ -40,13 +39,25 @@ public class AppConfig {
 	}
 	
 	@Bean
-	public ShouldBuy shouldBuy(MovingAverageBuyConsiderer buyConsiderer) {
+	public ShouldBuy shouldBuy(BurstBuyConsiderer buyConsiderer) {
 		if (App.test) return new ShouldBuy(buyConsiderer);
 		else return null;
 	}
 	
 	@Bean
-	public ShouldSell shouldSell(FakeBuyer buyer, FakeSeller seller, PercentageHighestProfitSellConsiderer sellConsiderer) {
+	public BuyConsiderer buyConsiderer() {
+		if (App.test) return new BurstBuyConsiderer();
+		else return null;
+	}
+	
+	@Bean
+	public SellConsiderer sellConsiderer(RestClientInteractor clientInteractor) {
+		if (App.test) return new BurstSellConsiderer(clientInteractor);
+		else return null;
+	}
+	
+	@Bean
+	public ShouldSell shouldSell(FakeBuyer buyer, FakeSeller seller, BurstSellConsiderer sellConsiderer) {
 		if (App.test) return new ShouldSell(sellConsiderer, buyer, seller);
 		else return null;
 	}

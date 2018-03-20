@@ -1,3 +1,4 @@
+package buySell;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import com.binance.api.client.domain.market.CandlestickInterval;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
 import MovingAverage.MovingAverageDifferenceCalculator;
-import buySell.BuyConsiderer;
 
 public class MovingAverageBuyConsiderer implements BuyConsiderer {
 	
@@ -69,6 +69,12 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 		}
 		System.out.print(" returning : "+confCounter);
 		return (confCounter == 3);
+	}
+
+	@Override
+	public boolean shouldBuyNow(int index) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

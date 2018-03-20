@@ -29,6 +29,25 @@ public class ThreadCoinHolders implements Runnable{
 		return toReturn;
 	}
 	
+	public static Float getMetric(int index) {
+		Float toReturn;
+		synchronized(symbolMetrics) {
+			logger.info(""+index+" - "+symbolMetrics[index]+" symbol "+symbolMetrics[index].getSymbol()+" value "+symbolMetrics[index].getMetric());
+			toReturn = new Float(symbolMetrics[index].getMetric());
+			return toReturn;
+		}
+	}
+	
+	public static Float getMetric(String symbol) {
+		Float toReturn;
+		synchronized(symbolMetrics) {
+			for (SymbolMetric symMet : symbolMetrics) {
+				if (symMet.getSymbol().equals(symbol)) return symMet.getMetric();
+			}
+			return null;
+		}
+	}
+	
 	public static boolean isNull(int index) {
 		synchronized (symbolMetrics) {
 			return symbolMetrics[index] == null;
@@ -87,37 +106,50 @@ public class ThreadCoinHolders implements Runnable{
 			while(!SymbolVsMetricSortedList.isReady()) {
 				
 			}
+			
 			List<SymbolMetric> tempList = new LinkedList<SymbolMetric>();
-			for(int i = 0; i < symbolMetrics.length; i++) {
-				
-				SymbolMetric thisMetric = SymbolVsMetricSortedList.get(i);
-				if (symbolMetrics[i] == null && !ready) {
-					symbolMetrics[i] = new SymbolMetric(thisMetric);
+			int loopLimit = symbolMetrics.length;
+			if (SymbolVsMetricSortedList.getSize() < symbolMetrics.length) loopLimit = SymbolVsMetricSortedList.getSize();
+			for (int i = 0 ; i < symbolMetrics.length; i++) {
+				if (symbolMetrics[i] != null) {
+					symbolMetrics[i] = new SymbolMetric(SymbolVsMetricSortedList.get(symbolMetrics[i].getSymbol()));
 				}
-				else {
-					
-					//Ensure that this new metric isn't a symbol already being considered
-					boolean inList = false;
-					for (int j = 0; j < symbolMetrics.length; j++) {
-						if (symbolMetrics[j].getSymbol().equals(thisMetric.getSymbol())) {
-							inList = true;
-						}
+			}
+			for(int i = 0; i < loopLimit; i++) {
+				if (SymbolVsMetricSortedList.get(i).getMetric() != null) {
+					SymbolMetric thisMetric = SymbolVsMetricSortedList.get(i);
+					if (symbolMetrics[i] == null && !ready) {
+						symbolMetrics[i] = new SymbolMetric(thisMetric);
 					}
-					
-					
-					for (int j = 0; j < symbolMetrics.length; j++) {
-						synchronized(symbolMetrics[j]) {
-							if (symbolMetrics[j].getMetric() > thisMetric.getMetric() && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
-								symbolMetrics[j] = new SymbolMetric(thisMetric);
-								logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
-								break;
+					else {
+						
+						//Ensure that this new metric isn't a symbol already being considered
+						boolean inList = false;
+						for (int j = 0; j < loopLimit; j++) {
+							if (symbolMetrics[j].getSymbol().equals(thisMetric.getSymbol())) {
+								inList = true;
+							}
+						}
+						
+						
+						for (int j = 0; j < loopLimit; j++) {
+							synchronized(symbolMetrics[j]) {
+								logger.info("Considering : "+symbolMetrics[j].getSymbol()+" | "+symbolMetrics[j].getMetric()+" vs "+thisMetric.getSymbol()+" | "+thisMetric.getMetric()+ " list? "+inList+" state ? "+symbolMetrics[j].getState());
+								if (symbolMetrics[j].getMetric() < thisMetric.getMetric() && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
+									symbolMetrics[j] = new SymbolMetric(thisMetric);
+									logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
+									break;
+								}
+								else if (symbolMetrics[j].getMetric() < thisMetric.getMetric() && inList && symbolMetrics[j].getSymbol().equals(thisMetric.getSymbol())) {
+									symbolMetrics[j].setMetric(SymbolVsMetricSortedList.get(symbolMetrics[j].getSymbol()).getMetric());
+								}
 							}
 						}
 					}
 				}
 			}
 			try {
-				Thread.sleep(30*1000);
+				Thread.sleep(10*1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

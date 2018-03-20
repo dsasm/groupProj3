@@ -67,7 +67,7 @@ public class BurstClassifier {
 	public boolean shouldBuy() {
 		
 		int lastCount = lastPrices.stream().filter(bool -> bool == true).collect(Collectors.toList()).size();
-		return (lastPrices.size() >= size && lastCount > Math.ceil(size / 2.0d)); 
+		return (lastPrices.size() >= size && lastCount >= Math.ceil(size * 0.7)); 
 	}
 	
 	public int numberIncrease() {

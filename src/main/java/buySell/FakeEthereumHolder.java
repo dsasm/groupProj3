@@ -1,4 +1,12 @@
 package buySell;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +38,20 @@ public class FakeEthereumHolder {
 		
 		synchronized (numberOfEthereum) {
 			
-			logger.info("Selling "+boughtInfo.getSymbol()+" for "+soldAt+ " Quantity "+boughtInfo.getQuantity());
+			logger.info("Selling "+boughtInfo.getSymbol()+" for "+soldAt+ " Quantity "+boughtInfo.getQuantity()+" current Eth: "+numberOfEthereum);
 			numberOfEthereum = numberOfEthereum + soldAt * boughtInfo.getQuantity();
 			logger.info("total Ethereum now : "+numberOfEthereum);
+			File file = new File("EthereumUpdater.txt");
+			
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				writer.write("Sold "+boughtInfo.getSymbol()+" Eth now "+ numberOfEthereum);
+				writer.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	

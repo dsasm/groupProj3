@@ -49,8 +49,7 @@ public class ShouldBuy implements Runnable{
 				
 				//get that coin and check if you should buy it
 				String consideringSymbol = ThreadCoinHolders.getSymbol(threadIndex);
-			
-				boolean buyNow = buyConsiderer.shouldBuyNow(consideringSymbol);
+				boolean buyNow = buyConsiderer.shouldBuyNow(threadIndex);
 				if (buyNow) {
 					
 					//If you should buy it, move it to the next state within its holder
@@ -59,7 +58,7 @@ public class ShouldBuy implements Runnable{
 				}
 				else {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(10*1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -46,7 +46,7 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 	}
 
 	@Override
-	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo) {
+	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo, int holdingIndex) {
 		String symbolToConsider = boughtInfo.getSymbol();
 		//work out the difference between the original price and the price now
 		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
@@ -87,11 +87,6 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 		return boughtInfo;
 	}
 
-	@Override
-	public void setThreadIndex(Integer threadIndex) {
-		this.holdingIndex = threadIndex;
-		
-	}
 	
 	
 	

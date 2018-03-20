@@ -1,8 +1,6 @@
 package MetricApplier;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -23,7 +21,7 @@ public class BurstSearcher implements MetricApplier{
 	private RestClientInteractor client;
 	Map<String, BurstClassifier> symbolBursts = new HashMap<String, BurstClassifier>();
 	
-	private final int NUMBER_RUNS = 5;
+	private final int NUMBER_RUNS = 10;
 	
 	@Autowired
 	public BurstSearcher(RestClientInteractor client) {
@@ -35,7 +33,9 @@ public class BurstSearcher implements MetricApplier{
 	public void run() {
 		 
 		for (String symbol : client.getListOfSymbols()) {
+			if (symbol.endsWith("ETH")) {
 			 symbolBursts.put(symbol, new BurstClassifier(symbol, NUMBER_RUNS));
+			}
 		}
 		int counter = 0;
 		while (true) {
@@ -45,20 +45,28 @@ public class BurstSearcher implements MetricApplier{
 						symbolBursts.get(price.getSymbol()).addNewPrice(Float.valueOf(price.getPrice()));
 					}
 					
-					if (symbolBursts.get(price.getSymbol()).shouldBuy()) {
-						SymbolVsMetricSortedList.put(price.getSymbol(), (float) symbolBursts.get(price.getSymbol()).numberIncrease());
-						logger.info("Putting "+price.getSymbol()+" into metricList Increased "+symbolBursts.get(price.getSymbol()).numberIncrease());
-					}
 				}
 			}
 			logger.info(counter+" run through");
 			counter++;
+			if (counter >= NUMBER_RUNS+1 ) {
+				for (Map.Entry<String, BurstClassifier> entry : symbolBursts.entrySet()) {
+					SymbolVsMetricSortedList.put(entry.getKey(), (float )entry.getValue().numberIncrease());
+					logger.info("put "+SymbolVsMetricSortedList.get(entry.getKey()).getSymbol()+" - "+SymbolVsMetricSortedList.get(entry.getKey()).getMetric());
+				}
+			}
 			//do it N +1 times as first will all be true
-			if (counter > NUMBER_RUNS+1) {
+			if (counter > NUMBER_RUNS+1 && SymbolVsMetricSortedList.getSize() >0 && !SymbolVsMetricSortedList.isReady()) {
 				SymbolVsMetricSortedList.setReady(true);
 				logger.info("Ready set");
 			}
+			int topInt = 0;
+			BurstClassifier top = new BurstClassifier();
 			
+			for(Map.Entry<String, BurstClassifier> classif : symbolBursts.entrySet()) {
+				if (classif.getValue().numberIncrease() > top.numberIncrease()) top = classif.getValue();
+			}
+			logger.info("Current Top : "+top.getSymbol()+" - "+top.numberIncrease());
 			try {
 				Thread.sleep(10*1000);
 			} catch (InterruptedException e) {

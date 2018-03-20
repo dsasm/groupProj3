@@ -77,5 +77,11 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 		logger.info(" returning : "+confCounter);
 		return (confCounter >= 2);
 	}
+
+	@Override
+	public boolean shouldBuyNow(int index) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

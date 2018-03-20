@@ -31,21 +31,25 @@ public class SymbolVsMetricSortedList{
 	public static void put(String symbol, Float value) {
 		synchronized (symbolVsMetric) {
 			
-			if (!ready) symbolVsMetric.add(new SymbolMetric(symbol,value));
 			
-			else symbolVsMetric = symbolVsMetric.stream()
-				.map((symbolMetric) -> {
-					if (symbolMetric.getSymbol().equals(symbol)) {
-						symbolMetric.setMetric(value);
-					}
-					return symbolMetric;
-				})
-				
-				.collect(Collectors.toList());
+			if (!ready && symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) symbolVsMetric.add(new SymbolMetric(symbol,value));
 			
-			symbolVsMetric.sort((left, right) -> {return left.compareTo(right);});
+			else {
+				if (symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) {
+					symbolVsMetric.add(new SymbolMetric(symbol,value));
+				}
+				else{
+					symbolVsMetric.stream()
+					.filter(symMet -> symMet.getSymbol().equals(symbol))
+					.forEach(symMet -> symMet.setMetric(value));
+				}
+			}
+			
+			symbolVsMetric.sort((left, right) -> {return right.compareTo(left);});
 		}
 	}
+	
+	
 	
 	/**
 	 * Thread-safely gets the SymbolMetric with the passed Symbol
@@ -76,6 +80,12 @@ public class SymbolVsMetricSortedList{
 			toReturn = new SymbolMetric(symbolVsMetric.get(index));
 		}
 		return toReturn;
+	}
+	
+	public static int getSize() {
+		synchronized (symbolVsMetric) {
+			return symbolVsMetric.size();
+		}
 	}
 	
 	public static void setReady(boolean ready) { SymbolVsMetricSortedList.ready = ready; 

@@ -8,7 +8,6 @@ public interface SellConsiderer {
 	 * @param boughtInfo		The boughtInfo to consider
 	 * @return					The new BoughtInfo with a shouldSell field indicating current intentions
 	 */
-	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo);
+	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo, int holdingIndex);
 	
-	public void setThreadIndex(Integer threadIndex);
 }
