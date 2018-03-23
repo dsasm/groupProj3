@@ -37,12 +37,12 @@ public class MovingAverageApplier implements MetricApplier{
 					
 					//And put the movingAverage in the map next to its coin symbol
 					SymbolVsMetricSortedList.put(symbol, value);
-					logger.info("Done coin "+symbol + " Value: "+value);
+					//logger.info("Done coin "+symbol + " Value: "+value);
 				}
 				
 			}
 			SymbolVsMetricSortedList.setReady(true);
-			logger.info("Completed a loop of lightWeight metric application");
+			//logger.info("Completed a loop of lightWeight metric application");
 
 		}
 		

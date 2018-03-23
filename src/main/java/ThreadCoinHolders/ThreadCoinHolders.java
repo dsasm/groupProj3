@@ -29,19 +29,19 @@ public class ThreadCoinHolders implements Runnable{
 		return toReturn;
 	}
 	
-	public static Float getMetric(int index) {
-		Float toReturn;
+	public static <T> T getMetric(int index) {
+		T toReturn;
 		synchronized(symbolMetrics) {
 			logger.info(""+index+" - "+symbolMetrics[index]+" symbol "+symbolMetrics[index].getSymbol()+" value "+symbolMetrics[index].getMetric());
-			toReturn = new Float(symbolMetrics[index].getMetric());
+			toReturn = (T) symbolMetrics[index].getMetric();
 			return toReturn;
 		}
 	}
 	
-	public static Float getMetric(String symbol) {
-		Float toReturn;
+	public static <T> T getMetric(String symbol) {
+		T toReturn;
 		synchronized(symbolMetrics) {
-			for (SymbolMetric symMet : symbolMetrics) {
+			for (SymbolMetric<T> symMet : symbolMetrics) {
 				if (symMet.getSymbol().equals(symbol)) return symMet.getMetric();
 			}
 			return null;
@@ -100,6 +100,7 @@ public class ThreadCoinHolders implements Runnable{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		while (true) {
@@ -135,12 +136,12 @@ public class ThreadCoinHolders implements Runnable{
 						for (int j = 0; j < loopLimit; j++) {
 							synchronized(symbolMetrics[j]) {
 								logger.info("Considering : "+symbolMetrics[j].getSymbol()+" | "+symbolMetrics[j].getMetric()+" vs "+thisMetric.getSymbol()+" | "+thisMetric.getMetric()+ " list? "+inList+" state ? "+symbolMetrics[j].getState());
-								if (symbolMetrics[j].getMetric() < thisMetric.getMetric() && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
+								if (symbolMetrics[j].compareTo(thisMetric) < 0 && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
 									symbolMetrics[j] = new SymbolMetric(thisMetric);
 									logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
 									break;
 								}
-								else if (symbolMetrics[j].getMetric() < thisMetric.getMetric() && inList && symbolMetrics[j].getSymbol().equals(thisMetric.getSymbol())) {
+								else if (symbolMetrics[j].compareTo(thisMetric) < 0 && inList && symbolMetrics[j].getSymbol().equals(thisMetric.getSymbol())) {
 									symbolMetrics[j].setMetric(SymbolVsMetricSortedList.get(symbolMetrics[j].getSymbol()).getMetric());
 								}
 							}

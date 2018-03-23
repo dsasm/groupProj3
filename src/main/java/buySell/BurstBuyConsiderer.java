@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
+import model.BurstClassifier;
 import model.SymbolMetric;
 
 @Component
@@ -25,7 +26,10 @@ public class BurstBuyConsiderer implements BuyConsiderer{
 	@Override
 	public boolean shouldBuyNow(String symbolToConsider) {
 		// TODO Auto-generated method stub
-		return false;
+		BurstClassifier thisMetric = (BurstClassifier) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
+		
+		logger.info(symbolToConsider+" - "+thisMetric.numberIncrease());
+		return thisMetric.shouldBuy();
 	}
 
 }

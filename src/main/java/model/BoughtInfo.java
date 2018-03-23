@@ -8,14 +8,24 @@ public class BoughtInfo {
 	private boolean passedThreshhold;
 	private boolean shouldSell;
 	private Integer quantity;
+	private long timeBoughtAt;
 	
-	public BoughtInfo(String symbol, Float boughtAt, Float highestProfit,  boolean passedThreshhold, Integer quantity, boolean shouldSell) {
+	public BoughtInfo(String symbol, Float boughtAt, Float highestProfit,  boolean passedThreshhold, Integer quantity, boolean shouldSell, long timeBoughtAt) {
 		this.symbol = symbol;
 		this.boughtAt = boughtAt;
 		this.highestProfit = highestProfit;
 		this.passedThreshhold = passedThreshhold;
 		this.quantity = quantity;
 		this.shouldSell = shouldSell;
+		this.timeBoughtAt = timeBoughtAt;
+	}
+
+	public long getTimeBoughtAt() {
+		return timeBoughtAt;
+	}
+
+	public void setTimeBoughtAt(long timeBoughtAt) {
+		this.timeBoughtAt = timeBoughtAt;
 	}
 
 	public boolean isShouldSell() {

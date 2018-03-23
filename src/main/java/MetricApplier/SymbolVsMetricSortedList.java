@@ -25,18 +25,19 @@ public class SymbolVsMetricSortedList{
 	
 	/**
 	 * Thread-safely adds a Symbol / Value pair to the symbolVsMetric Map
+	 * @param <T>
 	 * @param symbol		The Symbol key
 	 * @param value			The value to be put against the symbol
 	 */
-	public static void put(String symbol, Float value) {
+	public static <T> void put(String symbol, T value) {
 		synchronized (symbolVsMetric) {
 			
 			
-			if (!ready && symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) symbolVsMetric.add(new SymbolMetric(symbol,value));
+			if (!ready && symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) symbolVsMetric.add(new SymbolMetric<T>(symbol,value));
 			
 			else {
 				if (symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) {
-					symbolVsMetric.add(new SymbolMetric(symbol,value));
+					symbolVsMetric.add(new SymbolMetric<T>(symbol,value));
 				}
 				else{
 					symbolVsMetric.stream()

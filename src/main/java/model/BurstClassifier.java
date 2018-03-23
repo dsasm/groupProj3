@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BurstClassifier {
+public class BurstClassifier implements Comparable{
 	
 	private Logger logger = LoggerFactory.getLogger(BurstClassifier.class);
 	
@@ -67,11 +68,21 @@ public class BurstClassifier {
 	public boolean shouldBuy() {
 		
 		int lastCount = lastPrices.stream().filter(bool -> bool == true).collect(Collectors.toList()).size();
-		return (lastPrices.size() >= size && lastCount >= Math.ceil(size * 0.7)); 
+		int otherLastCount = lastPrices.subList(lastPrices.size()/2, lastPrices.size()).stream().filter(bool -> bool == true).collect(Collectors.toList()).size();
+		boolean trendingUpAtEnd = ((double)otherLastCount )/ (((double) lastPrices.size())/2) >= 0.75d;
+		logger.info("otherLastCount "+otherLastCount+" divided "+((double)otherLastCount )/ (((double) lastPrices.size())/2)+" trending? "+trendingUpAtEnd);
+		logger.info(lastPrices.subList(lastPrices.size()/2, lastPrices.size()).size()+" size");
+		return (lastPrices.size() >= size && lastCount >= Math.ceil(size * 0.7)) && trendingUpAtEnd; 
 	}
 	
 	public int numberIncrease() {
 		return lastPrices.stream().filter(bool -> bool == true).collect(Collectors.toList()).size();
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		return new Integer(this.numberIncrease()).compareTo(((BurstClassifier) o).numberIncrease());
 	}
 	
 }

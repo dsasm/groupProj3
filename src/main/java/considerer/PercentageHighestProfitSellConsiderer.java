@@ -84,6 +84,8 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 			
 		logger.info("Won't sell " +symbolToConsider+" has not met any conditions");
 		boughtInfo.setShouldSell(false);
+
+		if (priceDiff > boughtInfo.getHighestProfit()) boughtInfo.setHighestProfit(priceDiff);
 		return boughtInfo;
 	}
 

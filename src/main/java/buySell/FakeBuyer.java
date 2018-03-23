@@ -25,6 +25,7 @@ public class FakeBuyer implements Buyer{
 		toReturn.setHighestProfit(boughtAt);
 		toReturn.setPassedThreshhold(false);
 		toReturn.setShouldSell(false);
+		toReturn.setTimeBoughtAt(System.currentTimeMillis());
 		return FakeEthereumHolder.newBuy(toReturn);
 		
 	}

@@ -74,7 +74,7 @@ public class ShouldSell implements Runnable{
 				//if not, wait a while before checking again
 				if (!shouldSell) {
 					try {
-						Thread.sleep(10*1000);
+						Thread.sleep(20*1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

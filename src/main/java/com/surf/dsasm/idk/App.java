@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableAsync
 public class App 
 {
-	public static boolean test = true;
+	public static Mode mode = Mode.GRADIENT_CANDLES;
 	@Autowired private ThreadStarter threadStarter;
 	
 	@PostConstruct

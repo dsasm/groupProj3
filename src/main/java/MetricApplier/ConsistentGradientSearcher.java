@@ -6,25 +6,24 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.binance.api.client.domain.market.TickerPrice;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
 import model.BurstClassifier;
+import model.ConsistentGradientClassifier;
 
-@Service
-public class BurstSearcher implements MetricApplier{
+public class ConsistentGradientSearcher implements MetricApplier{
 
-	private Logger logger = LoggerFactory.getLogger(BurstSearcher.class);
+	private Logger logger = LoggerFactory.getLogger(ConsistentGradientSearcher.class);
 	
 	private RestClientInteractor client;
-	Map<String, BurstClassifier> symbolBursts = new HashMap<String, BurstClassifier>();
+	Map<String, ConsistentGradientClassifier> symbolBursts = new HashMap<String, ConsistentGradientClassifier>();
 	
 	private final int NUMBER_RUNS = 10;
 	
 	@Autowired
-	public BurstSearcher(RestClientInteractor client) {
+	public ConsistentGradientSearcher(RestClientInteractor client) {
 		this.client = client;
 	}
 	
@@ -34,15 +33,16 @@ public class BurstSearcher implements MetricApplier{
 		 
 		for (String symbol : client.getListOfSymbols()) {
 			if (symbol.endsWith("ETH")) {
-			 symbolBursts.put(symbol, new BurstClassifier(symbol, NUMBER_RUNS));
+			 symbolBursts.put(symbol, new ConsistentGradientClassifier(symbol, NUMBER_RUNS));
 			}
 		}
 		int counter = 0;
 		while (true) {
+			ConsistentGradientClassifier top = new ConsistentGradientClassifier();
 			for (TickerPrice price : client.getPrices()) {
 				if (price.getSymbol().endsWith("ETH")) {
 					if (symbolBursts.containsKey(price.getSymbol())) {
-						symbolBursts.get(price.getSymbol()).addNewPrice(Float.valueOf(price.getPrice()));
+						symbolBursts.get(price.getSymbol()).addNewPrice(Double.valueOf(price.getPrice()));
 					}
 					
 				}
@@ -50,8 +50,8 @@ public class BurstSearcher implements MetricApplier{
 			logger.info(counter+" run through");
 			counter++;
 			if (counter >= NUMBER_RUNS+1 ) {
-				for (Map.Entry<String, BurstClassifier> entry : symbolBursts.entrySet()) {
-					SymbolVsMetricSortedList.put(entry.getKey(), (BurstClassifier )entry.getValue());
+				for (Map.Entry<String, ConsistentGradientClassifier> entry : symbolBursts.entrySet()) {
+					SymbolVsMetricSortedList.put(entry.getKey(), (ConsistentGradientClassifier )entry.getValue());
 					//logger.info("put "+SymbolVsMetricSortedList.get(entry.getKey()).getSymbol()+" - "+SymbolVsMetricSortedList.get(entry.getKey()).getMetric());
 				}
 			}
@@ -61,12 +61,13 @@ public class BurstSearcher implements MetricApplier{
 				logger.info("Ready set");
 			}
 			int topInt = 0;
-			BurstClassifier top = new BurstClassifier();
-			
-			for(Map.Entry<String, BurstClassifier> classif : symbolBursts.entrySet()) {
-				if (classif.getValue().numberIncrease() > top.numberIncrease()) top = classif.getValue();
+			if (SymbolVsMetricSortedList.isReady()) {
+				for(Map.Entry<String, ConsistentGradientClassifier> classif : symbolBursts.entrySet()) {
+					if (top.getLastPrices().size() == 0) top = classif.getValue();
+					else if (classif.getValue().getSumIncr() > top.getSumIncr()) top = classif.getValue();
+				}
+				logger.info("Current Top : "+top.getSymbol()+" - "+top.getSumIncr());
 			}
-			logger.info("Current Top : "+top.getSymbol()+" - "+top.numberIncrease());
 			try {
 				Thread.sleep(20*1000);
 			} catch (InterruptedException e) {
@@ -76,5 +77,4 @@ public class BurstSearcher implements MetricApplier{
 		}
 		
 	}
-
 }

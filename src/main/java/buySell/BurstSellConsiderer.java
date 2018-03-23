@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
+import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
 import considerer.PercentageHighestProfitSellConsiderer;
 import model.BoughtInfo;
+import model.BurstClassifier;
 import model.SymbolMetric;
 
 @Component
@@ -30,10 +32,17 @@ public class BurstSellConsiderer implements SellConsiderer{
 		//work out the difference between the original price and the price now
 		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
-		logger.info("For thread : "+holdingIndex+"Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - number increased "+ThreadCoinHolders.getMetric(holdingIndex));
+		logger.info("For thread : "+holdingIndex+"Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - number increased "+((BurstClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric()).numberIncrease());
 		//highest profit so far is stored as the difference between the price then and the original price
+		
+		BurstClassifier extractedClassifier = (BurstClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
+		
+		
+		boughtInfo.setShouldSell(extractedClassifier.numberIncrease() <= 5 || priceDiff < 0.995*boughtInfo.getBoughtAt() || priceDiff < 0.995*boughtInfo.getHighestProfit() );
+		
 
-		boughtInfo.setShouldSell(ThreadCoinHolders.getMetric(holdingIndex) <= 5.0f);
+		if (priceDiff > boughtInfo.getHighestProfit()) boughtInfo.setHighestProfit(priceDiff);
+		
 		return boughtInfo;
 	}
 
