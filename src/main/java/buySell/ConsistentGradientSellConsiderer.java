@@ -34,7 +34,7 @@ public class ConsistentGradientSellConsiderer implements SellConsiderer{
 		
 		ConsistentGradientClassifier extractedClassifier = (ConsistentGradientClassifier) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
 		
-		boolean shouldSell = extractedClassifier.getSumIncr() <= 6 || priceDiff < 0.995*boughtInfo.getBoughtAt() || priceDiff < 0.998*boughtInfo.getHighestProfit();
+		boolean shouldSell = extractedClassifier
 		logger.info("highestProfit "+boughtInfo.getHighestProfit() + "looking to sell at "+0.998*boughtInfo.getHighestProfit());
 		//Gain confidence if it wants to sell so soon after buying
 		

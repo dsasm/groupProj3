@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import Holders.CoinsToBuyHolder;
+import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
 import model.State;
 
@@ -16,7 +17,7 @@ public class ShouldBuy implements Runnable{
 	private BuyConsiderer buyConsiderer;
 	private Logger logger = LoggerFactory.getLogger(ShouldBuy.class);
 	
-	
+	public static boolean consideringBuy = true;
 
 	public ShouldBuy(BuyConsiderer buyConsiderer) {
 		this.buyConsiderer = buyConsiderer;
@@ -39,7 +40,6 @@ public class ShouldBuy implements Runnable{
 				
 			}
 			logger.info("Buyer coinHolder no longer null");
-			boolean consideringBuy = true;
 			while(consideringBuy) {
 				
 				//While its coin is not in a state where you are only looking at it
@@ -49,7 +49,7 @@ public class ShouldBuy implements Runnable{
 				
 				//get that coin and check if you should buy it
 				String consideringSymbol = ThreadCoinHolders.getSymbol(threadIndex);
-				boolean buyNow = buyConsiderer.shouldBuyNow(consideringSymbol);
+				boolean buyNow = buyConsiderer.shouldBuyNow(consideringSymbol, SymbolVsMetricSortedList.get(consideringSymbol).getMetric());
 				if (buyNow) {
 					
 					//If you should buy it, move it to the next state within its holder

@@ -3,14 +3,14 @@ package model;
 public class BoughtInfo {
 	
 	private String symbol;
-	private Float boughtAt;
-	private Float highestProfit;
+	private Double boughtAt;
+	private Double highestProfit;
 	private boolean passedThreshhold;
 	private boolean shouldSell;
 	private Integer quantity;
 	private long timeBoughtAt;
 	
-	public BoughtInfo(String symbol, Float boughtAt, Float highestProfit,  boolean passedThreshhold, Integer quantity, boolean shouldSell, long timeBoughtAt) {
+	public BoughtInfo(String symbol, Double boughtAt, Double highestProfit,  boolean passedThreshhold, Integer quantity, boolean shouldSell, long timeBoughtAt) {
 		this.symbol = symbol;
 		this.boughtAt = boughtAt;
 		this.highestProfit = highestProfit;
@@ -63,23 +63,23 @@ public class BoughtInfo {
 		this.symbol = symbol;
 	}
 
-	public Float getBoughtAt() {
+	public Double getBoughtAt() {
 		return boughtAt;
 	}
 
-	public void setBoughtAt(Float boughtAt) {
+	public void setBoughtAt(Double boughtAt) {
 		this.boughtAt = boughtAt;
 	}
 
-	public Float getHighestProfit() {
+	public Double getHighestProfit() {
 		return highestProfit;
 	}
 
-	public void setHighestProfit(Float highestProfit) {
+	public void setHighestProfit(Double highestProfit) {
 		this.highestProfit = highestProfit;
 	}
 	
-	public Float getHighestProfitDiff() {
+	public Double getHighestProfitDiff() {
 		return highestProfit - boughtAt;
 	}
 	

@@ -26,7 +26,7 @@ public class StandardDeviationSellConsiderer implements SellConsiderer{
 		// TODO Auto-generated method stub
 		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
-		boughtInfo.setShouldSell(priceDiff < 0.998*boughtInfo.getBoughtAt() || priceDiff < 0.988*boughtInfo.getHighestProfit());
+		boughtInfo.setShouldSell();
 		
 		logger.info("Should sell? Current"+priceDiff+" BoughtAt "+boughtInfo.getBoughtAt()+" HP "+boughtInfo.getHighestProfit());
 		logger.info("Would sell at "+0.998*boughtInfo.getBoughtAt()+" or "+boughtInfo.getHighestProfit()*0.998);

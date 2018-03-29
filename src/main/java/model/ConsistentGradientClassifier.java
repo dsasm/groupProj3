@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsistentGradientClassifier implements Comparable{
+public class ConsistentGradientClassifier implements Metric, Comparable{
 		
 		Logger logger = LoggerFactory.getLogger(ConsistentGradientClassifier.class);
 		
@@ -122,7 +122,10 @@ public class ConsistentGradientClassifier implements Comparable{
 			return sumIncr;
 		}
 		
-		public void addNewPrice(Double newPrice) {
+		public void addNewPrice(Object newObject) {
+			
+			Double newPrice = (Double) newObject;
+			
 			if (lastPrices.size() >= size) {
 				lastPrices.remove(0);
 				lastPrices.add(newPrice);
@@ -134,5 +137,9 @@ public class ConsistentGradientClassifier implements Comparable{
 		@Override
 		public int compareTo(Object o) {
 			return Integer.compare(this.getSumIncr(), ((ConsistentGradientClassifier) o).getSumIncr());
+		}
+
+		public boolean shouldSell(Double currPrice, BoughtInfo boughtInfo) {
+			return this.getSumIncr() <= 6 || currPrice < 0.995*boughtInfo.getBoughtAt() || currPrice < 0.998*boughtInfo.getHighestProfit();
 		}
 }

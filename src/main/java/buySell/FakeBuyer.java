@@ -19,7 +19,7 @@ public class FakeBuyer implements Buyer{
 	@Override
 	public BoughtInfo buy(String symbol) {
 		BoughtInfo toReturn = new BoughtInfo();
-		Float boughtAt = clientInteractor.getLatestPrice(symbol);
+		Double boughtAt = clientInteractor.getLatestPrice(symbol);
 		toReturn.setBoughtAt(boughtAt);
 		toReturn.setSymbol(symbol);
 		toReturn.setHighestProfit(boughtAt);

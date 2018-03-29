@@ -38,7 +38,7 @@ public class BurstSellConsiderer implements SellConsiderer{
 		BurstClassifier extractedClassifier = (BurstClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
 		
 		
-		boughtInfo.setShouldSell(extractedClassifier.numberIncrease() <= 5 || priceDiff < 0.995*boughtInfo.getBoughtAt() || priceDiff < 0.995*boughtInfo.getHighestProfit() );
+		boughtInfo.setShouldSell(extractedClassifier );
 		
 
 		if (priceDiff > boughtInfo.getHighestProfit()) boughtInfo.setHighestProfit(priceDiff);

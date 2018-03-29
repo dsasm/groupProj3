@@ -19,6 +19,8 @@ public class ShouldSell implements Runnable{
 	private Buyer buyer;
 	private Seller seller;
 	
+	public static boolean continueRunning = true;
+	
 	private Logger logger = LoggerFactory.getLogger(ShouldSell.class);
 	
 	public ShouldSell(SellConsiderer sellConsiderer
@@ -45,7 +47,7 @@ public class ShouldSell implements Runnable{
 			
 		}
 		logger.info("Seller starting up with index "+threadIndex);
-		while(true) {
+		while(!continueRunning) {
 			
 			while(!ThreadCoinHolders.getState(threadIndex).equals(State.SHOULD_BUY)) {
 				

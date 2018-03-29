@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class StandardDeviationClassifier implements Comparable{
+public class StandardDeviationClassifier implements Metric, Comparable{
 	
 	Logger logger = LoggerFactory.getLogger(StandardDeviationClassifier.class);
 	
@@ -101,15 +101,21 @@ public class StandardDeviationClassifier implements Comparable{
 		this.lastPrices = lastPrices;
 	}
 	
-	public boolean shouldBuy(Double priceToCompare) {
-		logger.info("price "+(priceToCompare /  lastPrices.get(lastPrices.size()-1))+" would need "+(currentStandardDev + lastPrices.get(lastPrices.size()-1)));
-		return priceToCompare > currentStandardDev + lastPrices.get(lastPrices.size()-1);
+	public boolean shouldBuy() {
+		
+		Double priceToCompare = lastPrices.get(lastPrices.size() - 1);
+		
+		logger.info("price "+(priceToCompare /  lastPrices.get(lastPrices.size()-2))+" would need "+(currentStandardDev + lastPrices.get(lastPrices.size()-2)));
+		return priceToCompare > currentStandardDev + lastPrices.get(lastPrices.size()-2);
 	}
 	
-	public void addNewPrice(Double newPrice) {
+	public void addNewPrice(Object newObject) {
+		
+		Double newPrice = (Double) newObject;
+		
 		if (lastPrice == 0d) lastPrice = newPrice;
-		if (lastPrices.size() >= size) {
-			currentStandardDev = newStandardDeviation(newPrice);
+		if (lastPrices.size() > size) {
+			currentStandardDev = newStandardDeviation(lastPrices.get(lastPrices.size() -1));
 			lastPrices.remove(0);
 			lastPrices.add(newPrice);
 		}
@@ -140,4 +146,10 @@ public class StandardDeviationClassifier implements Comparable{
 		Double thatDiff = ((StandardDeviationClassifier) o).getLastPrices().get(((StandardDeviationClassifier) o).getSize()-1) - (((StandardDeviationClassifier) o).getCurrentStandardDev() +((StandardDeviationClassifier) o).getLastPrices().get(((StandardDeviationClassifier) o).getSize()-2)) ; 
 		return thisDiff.compareTo(thatDiff);
 	}
+
+	@Override
+	public boolean shouldSell(Double currPrice, BoughtInfo boughtInfo) {
+		return currPrice < 0.998*boughtInfo.getBoughtAt() || currPrice < 0.988*boughtInfo.getHighestProfit();
+	}
+
 }

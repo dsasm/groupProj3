@@ -34,17 +34,8 @@ public class CandlestickGradientBuyConsiderer implements BuyConsiderer{
 	}
 
 	@Override
-	public boolean shouldBuyNow(String symbolToConsider) {
-		// TODO Auto-generated method stub
-		GradientCandleClassifier thisMetric = (GradientCandleClassifier) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
+	public  boolean shouldBuyNow(String symbolToConsider, Metric metric) {
 		
-		logger.info(symbolToConsider+" - "+thisMetric.getSumIncr());
-		try {
-			Thread.sleep(60*1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return thisMetric.shouldBuy();
 	}
 

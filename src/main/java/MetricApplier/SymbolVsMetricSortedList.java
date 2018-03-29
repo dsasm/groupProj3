@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import model.Metric;
 import model.SymbolMetric;
 
 /**
@@ -29,15 +30,15 @@ public class SymbolVsMetricSortedList{
 	 * @param symbol		The Symbol key
 	 * @param value			The value to be put against the symbol
 	 */
-	public static <T> void put(String symbol, T value) {
+	public static void put(String symbol, Metric value) {
 		synchronized (symbolVsMetric) {
 			
 			
-			if (!ready && symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) symbolVsMetric.add(new SymbolMetric<T>(symbol,value));
+			if (!ready && symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) symbolVsMetric.add(new SymbolMetric(symbol,value));
 			
 			else {
 				if (symbolVsMetric.stream().filter(symMet -> symMet.getSymbol().equals(symbol)).collect(Collectors.toList()).size() == 0) {
-					symbolVsMetric.add(new SymbolMetric<T>(symbol,value));
+					symbolVsMetric.add(new SymbolMetric(symbol,value));
 				}
 				else{
 					symbolVsMetric.stream()

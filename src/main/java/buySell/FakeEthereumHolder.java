@@ -16,7 +16,7 @@ public class FakeEthereumHolder {
 	
 	private static Logger logger = LoggerFactory.getLogger(FakeEthereumHolder.class);
 	
-	private static Float numberOfEthereum = 100f;
+	private static Double numberOfEthereum = 100d;
 	
 	/**
 	 * given a boughtInfo buys, works out the proportional quantity and returns the new BoughtInfo 
@@ -34,7 +34,7 @@ public class FakeEthereumHolder {
 		}
 	}
 	
-	public static void newSell(BoughtInfo boughtInfo, Float soldAt) {
+	public static void newSell(BoughtInfo boughtInfo, Double soldAt) {
 		
 		synchronized (numberOfEthereum) {
 			

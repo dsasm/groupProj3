@@ -1,8 +1,8 @@
 package buySell;
 
+import model.Metric;
+
 public interface BuyConsiderer {
 	
-	public boolean shouldBuyNow(String symbolToConsider);
-	
-	public boolean shouldBuyNow(int index);
+	public <T> boolean shouldBuyNow(String symbolToConsider, Metric metric);
 }

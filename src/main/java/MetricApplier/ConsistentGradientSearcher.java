@@ -37,7 +37,7 @@ public class ConsistentGradientSearcher implements MetricApplier{
 			}
 		}
 		int counter = 0;
-		while (true) {
+		while (continueRunning) {
 			ConsistentGradientClassifier top = new ConsistentGradientClassifier();
 			for (TickerPrice price : client.getPrices()) {
 				if (price.getSymbol().endsWith("ETH")) {

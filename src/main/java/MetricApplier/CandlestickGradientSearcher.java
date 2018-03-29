@@ -41,7 +41,7 @@ public class CandlestickGradientSearcher implements MetricApplier{
 			}
 		}
 		int counter = 0;
-		while (true) {
+		while (continueRunning) {
 			GradientCandleClassifier top = new GradientCandleClassifier();
 			for (TickerPrice price : client.getPrices()) {
 				if (price.getSymbol().endsWith("ETH")) {

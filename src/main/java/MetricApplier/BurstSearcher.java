@@ -38,11 +38,11 @@ public class BurstSearcher implements MetricApplier{
 			}
 		}
 		int counter = 0;
-		while (true) {
+		while (continueRunning) {
 			for (TickerPrice price : client.getPrices()) {
 				if (price.getSymbol().endsWith("ETH")) {
 					if (symbolBursts.containsKey(price.getSymbol())) {
-						symbolBursts.get(price.getSymbol()).addNewPrice(Float.valueOf(price.getPrice()));
+						symbolBursts.get(price.getSymbol()).addNewPrice(Double.valueOf(price.getPrice()));
 					}
 					
 				}

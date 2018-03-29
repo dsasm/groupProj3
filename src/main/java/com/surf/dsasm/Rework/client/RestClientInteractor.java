@@ -40,8 +40,8 @@ public class RestClientInteractor {
 		return client.getCandlestickBars(symbol, interval);
 	}
 	
-	public Float getLatestPrice(String thisSymbol) {
-		return Float.valueOf(client.get24HrPriceStatistics(thisSymbol).getLastPrice());
+	public Double getLatestPrice(String thisSymbol) {
+		return Double.valueOf(client.get24HrPriceStatistics(thisSymbol).getLastPrice());
 	}
 	
 	public List<TickerPrice> getPrices(){

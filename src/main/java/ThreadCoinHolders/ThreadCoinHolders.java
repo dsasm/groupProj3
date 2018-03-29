@@ -9,6 +9,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import MetricApplier.SymbolVsMetricSortedList;
+import model.Metric;
 import model.State;
 import model.SymbolMetric;
 import model.SymbolMetricBought;
@@ -17,6 +18,7 @@ import model.SymbolMetricBought;
 public class ThreadCoinHolders implements Runnable{
 	
 	private static Logger logger = LoggerFactory.getLogger(ThreadCoinHolders.class);
+	public static boolean continueRunning = true;
 	
 	//An array of SymbolMetricBoughts that is the same length as the number of shouldBuys / shouldSells
 	private static SymbolMetric[] symbolMetrics = new SymbolMetric[2];
@@ -29,19 +31,19 @@ public class ThreadCoinHolders implements Runnable{
 		return toReturn;
 	}
 	
-	public static <T> T getMetric(int index) {
-		T toReturn;
+	public static Metric getMetric(int index) {
+		Metric toReturn;
 		synchronized(symbolMetrics) {
 			logger.info(""+index+" - "+symbolMetrics[index]+" symbol "+symbolMetrics[index].getSymbol()+" value "+symbolMetrics[index].getMetric());
-			toReturn = (T) symbolMetrics[index].getMetric();
+			toReturn = symbolMetrics[index].getMetric();
 			return toReturn;
 		}
 	}
 	
-	public static <T> T getMetric(String symbol) {
-		T toReturn;
+	public static Metric getMetric(String symbol) {
+		Metric toReturn;
 		synchronized(symbolMetrics) {
-			for (SymbolMetric<T> symMet : symbolMetrics) {
+			for (SymbolMetric symMet : symbolMetrics) {
 				if (symMet.getSymbol().equals(symbol)) return symMet.getMetric();
 			}
 			return null;
@@ -103,7 +105,7 @@ public class ThreadCoinHolders implements Runnable{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
-		while (true) {
+		while (continueRunning) {
 			while(!SymbolVsMetricSortedList.isReady()) {
 				
 			}

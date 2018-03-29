@@ -22,6 +22,8 @@ import buySell.ConsistentGradientBuyConsiderer;
 import buySell.ConsistentGradientSellConsiderer;
 import buySell.FakeBuyer;
 import buySell.FakeSeller;
+import buySell.MetricBuyConsiderer;
+import buySell.MetricSellConsiderer;
 import buySell.SellConsiderer;
 import buySell.ShouldBuy;
 import buySell.ShouldSell;
@@ -51,48 +53,30 @@ public class AppConfig {
 	}
 	
 	@Bean
-	public ShouldBuy shouldBuy(BurstBuyConsiderer buyConsiderer
-			, StandardDeviationBuyConsiderer sdBuyConsiderer
-			, ConsistentGradientBuyConsiderer consistentGradientBuyConsiderer
-			, CandlestickGradientBuyConsiderer candlestickGradientBuyConsiderer) {
+	public ShouldBuy shouldBuy(MetricBuyConsiderer metricBuyConsiderer) {
 		
-		if (App.mode.equals(Mode.BURST)) return new ShouldBuy(buyConsiderer);
-		else if (App.mode.equals(Mode.SD)) return new ShouldBuy(sdBuyConsiderer);
-		else if (App.mode.equals(Mode.GRADIENT)) return new ShouldBuy(consistentGradientBuyConsiderer);
-		else if (App.mode.equals(Mode.GRADIENT_CANDLES)) return new ShouldBuy(candlestickGradientBuyConsiderer);
+		if (!App.mode.equals(Mode.DATA_GATHER)) return new ShouldBuy(metricBuyConsiderer);
 		else return null;
 	}
 	
 	@Bean
 	public BuyConsiderer buyConsiderer(RestClientInteractor clientInteractor) {
-		if (App.mode.equals(Mode.BURST)) return new BurstBuyConsiderer();
-		else if (App.mode.equals(Mode.SD)) return new StandardDeviationBuyConsiderer(clientInteractor);
-		else if (App.mode.equals(Mode.GRADIENT)) return new ConsistentGradientBuyConsiderer(clientInteractor);
-		else if (App.mode.equals(Mode.GRADIENT_CANDLES)) return new CandlestickGradientBuyConsiderer(clientInteractor);
+		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricBuyConsiderer(clientInteractor);
 		else return null;
 	}
 	
 	@Bean
 	public SellConsiderer sellConsiderer(RestClientInteractor clientInteractor) {
-		if (App.mode.equals(Mode.BURST)) return new BurstSellConsiderer(clientInteractor);
-		else if (App.mode.equals(Mode.SD)) return new StandardDeviationSellConsiderer(clientInteractor);
-		else if (App.mode.equals(Mode.GRADIENT)) return new ConsistentGradientSellConsiderer(clientInteractor);
-		else if (App.mode.equals(Mode.GRADIENT_CANDLES)) return new CandlestickGradientSellConsiderer(clientInteractor);
+		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricSellConsiderer(clientInteractor);
 		else return null;
 	}
 	
 	@Bean
 	public ShouldSell shouldSell(FakeBuyer buyer
 			, FakeSeller seller
-			, BurstSellConsiderer sellConsiderer
-			, StandardDeviationSellConsiderer sdSellConsiderer
-			, ConsistentGradientSellConsiderer consistentGradientSellConsiderer
-			, CandlestickGradientSellConsiderer candlestickGradientSellConsiderer) {
+			, MetricSellConsiderer metricSellConsiderer) {
 		
-		if (App.mode.equals(Mode.BURST)) return new ShouldSell(sellConsiderer, buyer, seller);
-		if (App.mode.equals(Mode.SD)) return new ShouldSell(sdSellConsiderer, buyer, seller);
-		if (App.mode.equals(Mode.GRADIENT)) return new ShouldSell(consistentGradientSellConsiderer, buyer, seller);
-		else if (App.mode.equals(Mode.GRADIENT_CANDLES)) return new ShouldSell(candlestickGradientSellConsiderer, buyer, seller);
+		if (!App.mode.equals(Mode.DATA_GATHER)) return new ShouldSell(metricSellConsiderer, buyer, seller);
 		else return null;
 	}
 	
