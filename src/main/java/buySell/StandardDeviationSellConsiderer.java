@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
 
+import MetricApplier.SymbolVsMetricSortedList;
 import model.BoughtInfo;
+import model.Metric;
 
 @Component
 public class StandardDeviationSellConsiderer implements SellConsiderer{
@@ -24,9 +26,10 @@ public class StandardDeviationSellConsiderer implements SellConsiderer{
 
 		String symbolToConsider = boughtInfo.getSymbol();
 		// TODO Auto-generated method stub
-		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
+		Double priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
-		boughtInfo.setShouldSell();
+		Metric metric = (Metric) SymbolVsMetricSortedList.get(boughtInfo.getSymbol()).getMetric();
+		boughtInfo.setShouldSell(metric.shouldSell(priceDiff, boughtInfo));
 		
 		logger.info("Should sell? Current"+priceDiff+" BoughtAt "+boughtInfo.getBoughtAt()+" HP "+boughtInfo.getHighestProfit());
 		logger.info("Would sell at "+0.998*boughtInfo.getBoughtAt()+" or "+boughtInfo.getHighestProfit()*0.998);

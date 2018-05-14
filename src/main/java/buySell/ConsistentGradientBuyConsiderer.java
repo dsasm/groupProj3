@@ -11,6 +11,7 @@ import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
 import model.BurstClassifier;
 import model.ConsistentGradientClassifier;
+import model.Metric;
 
 @Component
 public class ConsistentGradientBuyConsiderer implements BuyConsiderer{
@@ -25,19 +26,11 @@ public class ConsistentGradientBuyConsiderer implements BuyConsiderer{
 		this.clientInteractor = clientInteractor;
 	}
 	
-	@Override
-	public boolean shouldBuyNow(int threadIndex) {
-		
-		Float thisMetric = ThreadCoinHolders.getMetric(threadIndex);
-		
-		logger.info(threadIndex+" - "+thisMetric);
-		return thisMetric >= Math.ceil(10*0.7);
-	}
 
 	@Override
-	public boolean shouldBuyNow(String symbolToConsider) {
+	public boolean shouldBuyNow(String symbolToConsider, Metric metric) {
 		// TODO Auto-generated method stub
-		ConsistentGradientClassifier thisMetric = (ConsistentGradientClassifier) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
+		ConsistentGradientClassifier thisMetric = (ConsistentGradientClassifier) metric;
 		
 		logger.info(symbolToConsider+" - "+thisMetric.getSumIncr());
 		return thisMetric.shouldBuy();

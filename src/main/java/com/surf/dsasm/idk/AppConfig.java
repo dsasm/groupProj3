@@ -3,7 +3,11 @@ package com.surf.dsasm.idk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import com.surf.dsasm.Rework.client.ActualClientInteractor;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.Rework.client.TestDataClientInteractor;
+import com.surf.dsasm.Rework.client.TestDataReader;
 
 import MetricApplier.BurstSearcher;
 import MetricApplier.CandlestickGradientSearcher;
@@ -63,6 +67,12 @@ public class AppConfig {
 	public BuyConsiderer buyConsiderer(RestClientInteractor clientInteractor) {
 		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricBuyConsiderer(clientInteractor);
 		else return null;
+	}
+	
+	@Bean 
+	public RestClientInteractor restClientInteractor() {
+		if (App.mode.equals(Mode.ALL)) return new TestDataClientInteractor();
+		else return new ActualClientInteractor();
 	}
 	
 	@Bean

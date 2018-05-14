@@ -13,6 +13,7 @@ import com.surf.dsasm.Rework.client.RestClientInteractor;
 
 import MovingAverage.MovingAverageDifferenceCalculator;
 import buySell.BuyConsiderer;
+import model.Metric;
 
 @Component
 public class MovingAverageBuyConsiderer implements BuyConsiderer {
@@ -29,15 +30,17 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 	}
 
 	@Override
-	public boolean shouldBuyNow(String symbolToConsider) {
-		Float MADiff = movingAverageDifferenceCalculator.calculateLightweight(symbolToConsider, CandlestickInterval.FIFTEEN_MINUTES, CandlestickInterval.FIVE_MINUTES);
-		List<Candlestick> candlesticks2 = clientInteractor.getCandlesticks(symbolToConsider, CandlestickInterval.FIVE_MINUTES);
-		Float latestOpen = Float.valueOf(candlesticks2.get(candlesticks2.size() - 1).getOpen());
-		Float latestClose = Float.valueOf(candlesticks2.get(candlesticks2.size() - 1).getClose());
-		logger.info("SYMBOL: "+symbolToConsider+" should buy? %diff MA = "+MADiff.toString() +" latestOpen  : "+latestOpen+" vs latestClose : "+latestClose);
-		if (MADiff > 1.001 && latestClose > latestOpen) return gainConfidenceInBuy(latestClose, symbolToConsider);
-		
-		return false;
+	public boolean shouldBuyNow(String symbolToConsider, Metric metric) {
+//		Float MADiff = movingAverageDifferenceCalculator.calculateLightweight(symbolToConsider, CandlestickInterval.FIFTEEN_MINUTES, CandlestickInterval.FIVE_MINUTES);
+//		List<Candlestick> candlesticks2 = clientInteractor.getCandlesticks(symbolToConsider, CandlestickInterval.FIVE_MINUTES);
+//		Float latestOpen = Float.valueOf(candlesticks2.get(candlesticks2.size() - 1).getOpen());
+//		Float latestClose = Float.valueOf(candlesticks2.get(candlesticks2.size() - 1).getClose());
+//		logger.info("SYMBOL: "+symbolToConsider+" should buy? %diff MA = "+MADiff.toString() +" latestOpen  : "+latestOpen+" vs latestClose : "+latestClose);
+//		if (MADiff > 1.001 && latestClose > latestOpen) return gainConfidenceInBuy(latestClose, symbolToConsider);
+//		
+//		return false;
+//		
+		return metric.shouldBuy();
 	}
 	
 	private boolean gainConfidenceInBuy(Float priceBasedOn, String thisSymbol) {
@@ -78,10 +81,5 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 		return (confCounter >= 2);
 	}
 
-	@Override
-	public boolean shouldBuyNow(int index) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 }

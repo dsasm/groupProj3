@@ -10,6 +10,7 @@ import com.surf.dsasm.Rework.client.RestClientInteractor;
 import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
 import model.GradientCandleClassifier;
+import model.Metric;
 
 @Component
 public class CandlestickGradientBuyConsiderer implements BuyConsiderer{
@@ -23,18 +24,9 @@ public class CandlestickGradientBuyConsiderer implements BuyConsiderer{
 	public CandlestickGradientBuyConsiderer(RestClientInteractor clientInteractor) {
 		this.clientInteractor = clientInteractor;
 	}
-	
-	@Override
-	public boolean shouldBuyNow(int threadIndex) {
-		
-		Float thisMetric = ThreadCoinHolders.getMetric(threadIndex);
-		
-		logger.info(threadIndex+" - "+thisMetric);
-		return thisMetric >= Math.ceil(10*0.7);
-	}
 
 	@Override
-	public  boolean shouldBuyNow(String symbolToConsider, Metric metric) {
+	public  boolean shouldBuyNow(String symbolToConsider, Metric thisMetric) {
 		
 		return thisMetric.shouldBuy();
 	}

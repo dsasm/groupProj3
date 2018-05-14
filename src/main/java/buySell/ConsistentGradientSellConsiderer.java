@@ -27,19 +27,19 @@ public class ConsistentGradientSellConsiderer implements SellConsiderer{
 
 		String symbolToConsider = boughtInfo.getSymbol();
 		//work out the difference between the original price and the price now
-		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
+		Double priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
 		logger.info("For thread : "+holdingIndex+"Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - number increased "+((ConsistentGradientClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric()).getSumIncr());
 		//highest profit so far is stored as the difference between the price then and the original price
 		
 		ConsistentGradientClassifier extractedClassifier = (ConsistentGradientClassifier) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
 		
-		boolean shouldSell = extractedClassifier
+		boolean shouldSell = extractedClassifier.shouldSell(priceDiff, boughtInfo);
 		logger.info("highestProfit "+boughtInfo.getHighestProfit() + "looking to sell at "+0.998*boughtInfo.getHighestProfit());
 		//Gain confidence if it wants to sell so soon after buying
 		
 		if (!shouldSell && boughtInfo.getTimeBoughtAt() < 1000*120 && priceDiff < 0.995*boughtInfo.getBoughtAt()) {
-			Float currPrice = new Float(priceDiff);
+			Double currPrice = new Double(priceDiff);
 			while (currPrice == priceDiff) {
 				try {
 					Thread.sleep(10*1000);

@@ -17,20 +17,35 @@ import com.binance.api.client.domain.market.TickerPrice;
  * @author apsimpsonmccaffrey
  *
  */
-
-public interface RestClientInteractor {
+@Service
+public class TestDataClientInteractor implements RestClientInteractor{
 	
+	private static TestDataReader testDataReader;
 	
+	public TestDataClientInteractor() {
+		testDataReader.run();
+	}
 	
 	/**
 	 * This is a Method which will call the API, get all current prices, strip away the prices and return the Symbols
 	 * @return		- The {@code List} of Symbols
 	 */
-	public List<String> getListOfSymbols();
+	public List<String> getListOfSymbols() {
+		
+		return TestDataReader.getAllPrices().stream()
+				.map(price -> price.getSymbol())
+				.collect(Collectors.toList());
+	}
 	
-	public List<Candlestick> getCandlesticks(String symbol, CandlestickInterval interval);
+	public List<Candlestick> getCandlesticks(String symbol, CandlestickInterval interval){
+		return null;
+	}
 	
-	public Double getLatestPrice(String thisSymbol);
+	public Double getLatestPrice(String thisSymbol) {
+		return Double.valueOf(TestDataReader.getLastPrice(thisSymbol));
+	}
 	
-	public List<TickerPrice> getPrices();
+	public List<TickerPrice> getPrices(){
+		return TestDataReader.getAllPrices();
+	}
 }

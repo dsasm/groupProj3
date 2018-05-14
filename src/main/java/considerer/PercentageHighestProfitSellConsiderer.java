@@ -22,7 +22,7 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 		this.clientInteractor = clientInteractor;
 	}
 	
-	private boolean gainConfidenceInSell(Float basedOn, String symbol, int count) {
+	private boolean gainConfidenceInSell(Double basedOn, String symbol, int count) {
 		//wait a half minute then check if it has increased, then buy
 		//wait a half minute then check if it has increased, then buy
 		count +=1;
@@ -32,7 +32,7 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Float newPrice = clientInteractor.getLatestPrice(symbol);
+		Double newPrice = clientInteractor.getLatestPrice(symbol);
 		if (newPrice < basedOn) {
 			return true;
 		}
@@ -49,7 +49,7 @@ public class PercentageHighestProfitSellConsiderer implements SellConsiderer{
 	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo, int holdingIndex) {
 		String symbolToConsider = boughtInfo.getSymbol();
 		//work out the difference between the original price and the price now
-		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
+		Double priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
 		logger.info("Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - highest profit "+currentInfo.getHighestProfit()+" - passedThreshhold "+currentInfo.isPassedThreshhold());
 		//highest profit so far is stored as the difference between the price then and the original price

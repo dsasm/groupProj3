@@ -12,6 +12,7 @@ import ThreadCoinHolders.ThreadCoinHolders;
 import considerer.PercentageHighestProfitSellConsiderer;
 import model.BoughtInfo;
 import model.BurstClassifier;
+import model.Metric;
 import model.SymbolMetric;
 
 @Component
@@ -30,18 +31,20 @@ public class BurstSellConsiderer implements SellConsiderer{
 		
 		String symbolToConsider = boughtInfo.getSymbol();
 		//work out the difference between the original price and the price now
-		Float priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
+		Double priceDiff = clientInteractor.getLatestPrice(symbolToConsider);
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
 		logger.info("For thread : "+holdingIndex+"Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - number increased "+((BurstClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric()).numberIncrease());
 		//highest profit so far is stored as the difference between the price then and the original price
 		
-		BurstClassifier extractedClassifier = (BurstClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
+		Metric metric = (Metric) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
 		
-		
-		boughtInfo.setShouldSell(extractedClassifier );
+		boolean shouldSell = metric.shouldSell(priceDiff, currentInfo);
 		
 
 		if (priceDiff > boughtInfo.getHighestProfit()) boughtInfo.setHighestProfit(priceDiff);
+		
+		logger.info("Should Sell? "+shouldSell);
+		boughtInfo.setShouldSell(shouldSell);
 		
 		return boughtInfo;
 	}

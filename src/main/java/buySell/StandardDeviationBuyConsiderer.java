@@ -10,6 +10,7 @@ import com.surf.dsasm.Rework.client.RestClientInteractor;
 import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
 import model.BurstClassifier;
+import model.Metric;
 import model.StandardDeviationClassifier;
 
 @Component
@@ -24,29 +25,20 @@ public class StandardDeviationBuyConsiderer implements BuyConsiderer{
 	}
 	
 	@Override
-	public boolean shouldBuyNow(int threadIndex) {
-		
-		Float thisMetric = ThreadCoinHolders.getMetric(threadIndex);
-		
-		logger.info(threadIndex+" - "+thisMetric);
-		return thisMetric >= Math.ceil(10*0.7);
-	}
-
-	@Override
-	public boolean shouldBuyNow(String symbolToConsider) {
+	public boolean shouldBuyNow(String symbolToConsider, Metric metric) {
 		// TODO Auto-generated method stub
-		StandardDeviationClassifier thisMetric = (StandardDeviationClassifier) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();
+		StandardDeviationClassifier thisMetric = (StandardDeviationClassifier) metric;
 		
 		logger.info(symbolToConsider+" - "+thisMetric.getCurrentStandardDev()+" curr price "+clientInteractor.getLatestPrice(symbolToConsider));
 		
-		if (thisMetric.shouldBuy(Double.parseDouble(clientInteractor.getLatestPrice(symbolToConsider).toString()))) {
+		if (thisMetric.shouldBuy()) {
 			try {
 				Thread.sleep(30*1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return thisMetric.shouldBuy(Double.parseDouble(clientInteractor.getLatestPrice(symbolToConsider).toString()));
+			return thisMetric.shouldBuy();
 		}
 		else return false;
 	}

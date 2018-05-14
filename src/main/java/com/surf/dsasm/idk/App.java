@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class App 
 {
 	public static Mode mode = Mode.ALL;
+	public static boolean finishedRun = true;
 	@Autowired private ThreadStarter threadStarter;
 	
 	@Autowired private DataGatherer dataGatherer;
@@ -27,10 +28,12 @@ public class App
 	public void init() throws InterruptedException {
 		if (App.mode.equals(Mode.ALL)) {
 			for (Mode currMode : EnumUtils.getEnumList(Mode.class)) {
+				finishedRun = false;
 				mode = currMode;
 				threadStarter.start();
-				Thread.sleep(1000*60*8);
-				gc.
+				while(!finishedRun) {
+					
+				}
 			}
 		}
 		else threadStarter.start();
