@@ -19,6 +19,7 @@ public class DataGatherer {
 	
 	private RestClientInteractor restClientInteractor;
 	private Logger logger = LoggerFactory.getLogger(DataGatherer.class);
+	
 	@Autowired 
 	public DataGatherer(RestClientInteractor restClientInteractor) {
 		this.restClientInteractor = restClientInteractor;

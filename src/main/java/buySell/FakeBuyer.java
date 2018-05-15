@@ -9,17 +9,17 @@ import model.BoughtInfo;
 @Component
 public class FakeBuyer implements Buyer{
 	
-	private RestClientInteractor clientInteractor;
+	private RestClientInteractor restClientInteractor;
 	
 	@Autowired
-	public FakeBuyer(RestClientInteractor clientInteractor) {
-		this.clientInteractor = clientInteractor;
+	public FakeBuyer(RestClientInteractor restClientInteractor) {
+		this.restClientInteractor = restClientInteractor;
 	}
 
 	@Override
 	public BoughtInfo buy(String symbol) {
 		BoughtInfo toReturn = new BoughtInfo();
-		Double boughtAt = clientInteractor.getLatestPrice(symbol);
+		Double boughtAt = restClientInteractor.getLatestPrice(symbol);
 		toReturn.setBoughtAt(boughtAt);
 		toReturn.setSymbol(symbol);
 		toReturn.setHighestProfit(boughtAt);

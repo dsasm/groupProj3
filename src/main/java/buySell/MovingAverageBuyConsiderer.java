@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.idk.App;
 
 import MovingAverage.MovingAverageDifferenceCalculator;
 import buySell.BuyConsiderer;
@@ -50,7 +51,7 @@ public class MovingAverageBuyConsiderer implements BuyConsiderer {
 		while(counter < 3 ) {
 			logger.info("CoinWatcher - "+thisSymbol+" - Gaining Confidence in Buy - passed "+priceBasedOn);
 			try {
-				Thread.sleep(1000*5);
+				Thread.sleep(1000*5/App.speed);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -23,7 +23,8 @@ public class TestDataClientInteractor implements RestClientInteractor{
 	private static TestDataReader testDataReader;
 	
 	public TestDataClientInteractor() {
-		testDataReader.run();
+		testDataReader = new TestDataReader();
+		new Thread(testDataReader).start();
 	}
 	
 	/**
@@ -31,21 +32,24 @@ public class TestDataClientInteractor implements RestClientInteractor{
 	 * @return		- The {@code List} of Symbols
 	 */
 	public List<String> getListOfSymbols() {
-		
+		while(!TestDataReader.readyToRead) {}
 		return TestDataReader.getAllPrices().stream()
 				.map(price -> price.getSymbol())
 				.collect(Collectors.toList());
 	}
 	
 	public List<Candlestick> getCandlesticks(String symbol, CandlestickInterval interval){
+		while(!TestDataReader.readyToRead) {}
 		return null;
 	}
 	
 	public Double getLatestPrice(String thisSymbol) {
+		while(!TestDataReader.readyToRead) {}
 		return Double.valueOf(TestDataReader.getLastPrice(thisSymbol));
 	}
 	
 	public List<TickerPrice> getPrices(){
+		while(!TestDataReader.readyToRead) {}
 		return TestDataReader.getAllPrices();
 	}
 }

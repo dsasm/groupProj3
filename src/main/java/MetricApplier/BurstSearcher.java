@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.binance.api.client.domain.market.TickerPrice;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.idk.App;
 
 import model.BurstClassifier;
 
@@ -33,16 +34,19 @@ public class BurstSearcher implements MetricApplier{
 	public void run() {
 		 
 		for (String symbol : client.getListOfSymbols()) {
-			if (symbol.endsWith("ETH")) {
-			 symbolBursts.put(symbol, new BurstClassifier(symbol, NUMBER_RUNS));
+			if (symbol.contains("ETH")) {
+				symbolBursts.put(symbol, new BurstClassifier(symbol, NUMBER_RUNS));
 			}
 		}
+		logger.info(symbolBursts.keySet().size()+" Symbols");
 		int counter = 0;
 		while (continueRunning) {
 			for (TickerPrice price : client.getPrices()) {
 				if (price.getSymbol().endsWith("ETH")) {
 					if (symbolBursts.containsKey(price.getSymbol())) {
-						symbolBursts.get(price.getSymbol()).addNewPrice(Double.valueOf(price.getPrice()));
+						BurstClassifier currBC = symbolBursts.get(price.getSymbol());
+						currBC.addNewPrice(Double.valueOf(price.getPrice()));
+						symbolBursts.put(price.getSymbol(), currBC);
 					}
 					
 				}
@@ -68,7 +72,7 @@ public class BurstSearcher implements MetricApplier{
 			}
 			logger.info("Current Top : "+top.getSymbol()+" - "+top.numberIncrease());
 			try {
-				Thread.sleep(20*1000);
+				Thread.sleep(20*1000/App.speed);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

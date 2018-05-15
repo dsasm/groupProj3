@@ -17,7 +17,7 @@ import com.binance.api.client.domain.market.TickerPrice;
  * @author apsimpsonmccaffrey
  *
  */
-
+@Component
 public interface RestClientInteractor {
 	
 	

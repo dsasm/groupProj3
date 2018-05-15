@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
+import com.surf.dsasm.idk.App;
+
 import MetricApplier.SymbolVsMetricSortedList;
 import model.Metric;
 import model.State;
@@ -137,7 +139,6 @@ public class ThreadCoinHolders implements Runnable{
 						
 						for (int j = 0; j < loopLimit; j++) {
 							synchronized(symbolMetrics[j]) {
-								logger.info("Considering : "+symbolMetrics[j].getSymbol()+" | "+symbolMetrics[j].getMetric()+" vs "+thisMetric.getSymbol()+" | "+thisMetric.getMetric()+ " list? "+inList+" state ? "+symbolMetrics[j].getState());
 								if (symbolMetrics[j].compareTo(thisMetric) < 0 && !inList && symbolMetrics[j].getState().equals(State.LOOKING_AT)) {
 									symbolMetrics[j] = new SymbolMetric(thisMetric);
 									logger.info("Added : "+thisMetric.getSymbol()+ " to symbolMetrics for thread "+j );
@@ -152,7 +153,7 @@ public class ThreadCoinHolders implements Runnable{
 				}
 			}
 			try {
-				Thread.sleep(10*1000);
+				Thread.sleep(10*1000/App.speed);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

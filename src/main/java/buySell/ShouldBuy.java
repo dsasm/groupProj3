@@ -3,6 +3,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.surf.dsasm.idk.App;
+
 import Holders.CoinsToBuyHolder;
 import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
@@ -58,7 +60,7 @@ public class ShouldBuy implements Runnable{
 				}
 				else {
 					try {
-						Thread.sleep(20*1000);
+						Thread.sleep(20*1000/App.speed);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

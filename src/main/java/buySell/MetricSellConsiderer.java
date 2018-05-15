@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.idk.App;
 
 import MetricApplier.SymbolVsMetricSortedList;
 import model.BoughtInfo;
@@ -24,7 +25,7 @@ public class MetricSellConsiderer implements SellConsiderer{
 	@Override
 	public BoughtInfo shouldSellNow(BoughtInfo boughtInfo, int holdingIndex) {
 		try {
-			Thread.sleep(60*1000);
+			Thread.sleep(60*1000/App.speed);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,7 +36,7 @@ public class MetricSellConsiderer implements SellConsiderer{
 		Double priceDiff = Double.valueOf(clientInteractor.getLatestPrice(symbolToConsider).toString());
 		
 		BoughtInfo currentInfo = boughtInfo;//BoughtCoinsHolder.getBought(holdingIndex);
-		logger.info("For thread : "+holdingIndex+"Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff+" - number increased "+((GradientCandleClassifier)SymbolVsMetricSortedList.get(symbolToConsider).getMetric()).getSumIncr());
+		logger.info("For thread : "+holdingIndex+"Should sell "+symbolToConsider+" - Bought at "+boughtInfo.getBoughtAt()+" - currently "+priceDiff);
 		//highest profit so far is stored as the difference between the price then and the original price
 		
 		Metric metric = (Metric) SymbolVsMetricSortedList.get(symbolToConsider).getMetric();

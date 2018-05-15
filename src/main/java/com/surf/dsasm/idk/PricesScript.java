@@ -1,38 +1,37 @@
-package com.surf.dsasm.Rework.client;
+package com.surf.dsasm.idk;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.binance.api.client.domain.market.TickerPrice;
-import com.surf.dsasm.idk.App;
+import com.surf.dsasm.Rework.client.TestDataReader;
 
-public class TestDataReader implements Runnable{
+public class PricesScript {	
 	
-	Logger LOGGER = LoggerFactory.getLogger(TestDataReader.class);
+	static Logger LOGGER = LoggerFactory.getLogger(PricesScript.class);
 	
 	private static List<TickerPrice> allCurrentPrices = new LinkedList<TickerPrice>();
 	public static boolean readyToRead;
 	
-	@Override
-	public void run() {
+	public static void run() {
 		readyToRead = false;
-	
 		
 		File file = new File("Prices.txt");
 		try {
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String delimSymbol = null;
-			
+			int counter = 0;
 			while(bufferedReader.ready()) {
 					String currentLine = bufferedReader.readLine();
 					
@@ -54,6 +53,8 @@ public class TestDataReader implements Runnable{
 											readyToRead = true;
 										}
 										Thread.sleep(2000/App.speed);
+										tagAndWriteToFile(counter);
+										counter++;
 										allCurrentPrices = new LinkedList<TickerPrice>();
 										
 									}
@@ -89,17 +90,22 @@ public class TestDataReader implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
-	
-	public static List<TickerPrice> getAllPrices() {
-		return allCurrentPrices;
+	private static void tagAndWriteToFile(int counter) {
+		File file = new File("Prices.txt");
+		FileWriter fileReader;
+		try {
+			fileReader = new FileWriter(file);
+			BufferedWriter bufferedReader = new BufferedWriter(fileReader);
+			List<TickerPrice> pricesToAppend = new LinkedList<TickerPrice>();
+			for (TickerPrice price: allCurrentPrices) {
+				bufferedReader.append(price.getSymbol()+"="+price.getPrice()+"="+counter+",");
+			}
+			bufferedReader.append("\n");
+			bufferedReader.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
-	public static String getLastPrice(String priceToGet) {
-		Optional<TickerPrice> optional = allCurrentPrices.stream().filter(x -> x.getSymbol().equals(priceToGet)).findFirst();
-		return optional.get().getPrice();
-		
-	}
-
 }

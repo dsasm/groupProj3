@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.binance.api.client.domain.market.TickerPrice;
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.idk.App;
 
 import model.BurstClassifier;
 import model.ConsistentGradientClassifier;
@@ -69,7 +70,7 @@ public class ConsistentGradientSearcher implements MetricApplier{
 				logger.info("Current Top : "+top.getSymbol()+" - "+top.getSumIncr());
 			}
 			try {
-				Thread.sleep(20*1000);
+				Thread.sleep(20*1000/App.speed);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

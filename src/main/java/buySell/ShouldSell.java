@@ -3,6 +3,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.surf.dsasm.idk.App;
+
 import Holders.CoinsToBuyHolder;
 import ThreadCoinHolders.ThreadCoinHolders;
 import considerer.BoughtCoinsHolder;
@@ -47,10 +49,15 @@ public class ShouldSell implements Runnable{
 			
 		}
 		logger.info("Seller starting up with index "+threadIndex);
-		while(!continueRunning) {
+		while(continueRunning) {
 			
 			while(!ThreadCoinHolders.getState(threadIndex).equals(State.SHOULD_BUY)) {
-				
+				try {
+					Thread.sleep(1000/App.speed);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			//There is now a coin to buy, so pop it (removes from the list)
@@ -76,7 +83,7 @@ public class ShouldSell implements Runnable{
 				//if not, wait a while before checking again
 				if (!shouldSell) {
 					try {
-						Thread.sleep(20*1000);
+						Thread.sleep(20*1000/App.speed);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

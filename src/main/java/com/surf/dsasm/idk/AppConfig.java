@@ -39,20 +39,27 @@ import considerer.PercentageHighestProfitSellConsiderer;
 @ComponentScan(basePackages={"com.surf.dsasm.Rework.client", "buySell","considerer"})
 public class AppConfig {
 	
+
 	
-	
-	@Bean
-	public MetricApplier metricApplier(RestClientInteractor clientInteractor ) {
-		if (App.mode.equals(Mode.BURST)) return new BurstSearcher(clientInteractor);
-		else if (App.mode.equals(Mode.SD)) return new StandardDeviationSearcher(clientInteractor);
-		else if (App.mode.equals(Mode.GRADIENT)) return new ConsistentGradientSearcher(clientInteractor);
-		else if (App.mode.equals(Mode.GRADIENT_CANDLES)) return new CandlestickGradientSearcher(clientInteractor);
-		else return null;
+	@Bean 
+	public RestClientInteractor restClientInteractor() {
+		if (App.allMode) return new TestDataClientInteractor();
+		else return new ActualClientInteractor();
 	}
 	
 	@Bean
-	public MovingAverageDifferenceCalculator movingAverageDifferenceCalculator(RestClientInteractor clientInteractor) {
-		if (App.mode.equals(Mode.BURST)) return new MovingAverageFlatPercentageDifferenceCalculator(clientInteractor);
+	public MetricApplier metricApplier(RestClientInteractor restClientInteractor ) {
+		if (App.mode.equals(Mode.BURST)) return new BurstSearcher(restClientInteractor);
+		else if (App.mode.equals(Mode.SD)) return new StandardDeviationSearcher(restClientInteractor);
+		else if (App.mode.equals(Mode.GRADIENT)) return new ConsistentGradientSearcher(restClientInteractor);
+		else if (App.mode.equals(Mode.GRADIENT_CANDLES)) return new CandlestickGradientSearcher(restClientInteractor);
+		else return null;
+	}
+	
+	
+	@Bean
+	public MovingAverageDifferenceCalculator movingAverageDifferenceCalculator(RestClientInteractor restClientInteractor) {
+		if (App.mode.equals(Mode.BURST)) return new MovingAverageFlatPercentageDifferenceCalculator(restClientInteractor);
 		else return null;
 	}
 	
@@ -64,20 +71,14 @@ public class AppConfig {
 	}
 	
 	@Bean
-	public BuyConsiderer buyConsiderer(RestClientInteractor clientInteractor) {
-		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricBuyConsiderer(clientInteractor);
+	public BuyConsiderer buyConsiderer(RestClientInteractor restClientInteractor) {
+		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricBuyConsiderer(restClientInteractor);
 		else return null;
 	}
 	
-	@Bean 
-	public RestClientInteractor restClientInteractor() {
-		if (App.mode.equals(Mode.ALL)) return new TestDataClientInteractor();
-		else return new ActualClientInteractor();
-	}
-	
 	@Bean
-	public SellConsiderer sellConsiderer(RestClientInteractor clientInteractor) {
-		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricSellConsiderer(clientInteractor);
+	public SellConsiderer sellConsiderer(RestClientInteractor restClientInteractor) {
+		if (!App.mode.equals(Mode.DATA_GATHER)) return new MetricSellConsiderer(restClientInteractor);
 		else return null;
 	}
 	
@@ -98,5 +99,4 @@ public class AppConfig {
 				|| App.mode.equals(Mode.GRADIENT_CANDLES)) return new ThreadCoinHolders();
 		else return null;
 	}
-	
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
+import com.surf.dsasm.idk.App;
 
 import MetricApplier.SymbolVsMetricSortedList;
 import ThreadCoinHolders.ThreadCoinHolders;
@@ -33,7 +34,7 @@ public class StandardDeviationBuyConsiderer implements BuyConsiderer{
 		
 		if (thisMetric.shouldBuy()) {
 			try {
-				Thread.sleep(30*1000);
+				Thread.sleep(30*1000/App.speed);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
