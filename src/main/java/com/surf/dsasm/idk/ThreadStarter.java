@@ -25,30 +25,14 @@ import buySell.ShouldSell;
 public class ThreadStarter {
 	
 	//Autowires aren't constructed ON PURPOSE
-	private MetricApplier metricApplier;
+	@Autowired private MetricApplier metricApplier;
 	private ShouldBuy[] shouldBuy = new ShouldBuy[2];
 	private ShouldSell[] shouldSell = new ShouldSell[2];
-	private ThreadCoinHolders threadCoinHolder;
-	private SellConsiderer sellConsiderer;
-	private BuyConsiderer buyConsiderer;
-	private Buyer buyer;
-	private Seller seller;
-	
-	@Autowired
-	public ThreadStarter(MetricApplier metricApplier
-			, ThreadCoinHolders threadCoinHolder
-			, SellConsiderer sellConsiderer
-			, BuyConsiderer buyConsiderer
-			, Buyer buyer
-			, Seller seller) {
-		this.metricApplier = metricApplier;
-		this.threadCoinHolder = threadCoinHolder;
-		this.sellConsiderer = sellConsiderer;
-		this.buyConsiderer = buyConsiderer;
-		this.buyer = buyer;
-		this.seller = seller;
-	}
-	
+	@Autowired private ThreadCoinHolders threadCoinHolder;
+	@Autowired SellConsiderer sellConsiderer;
+	@Autowired BuyConsiderer buyConsiderer;
+	@Autowired Buyer buyer;
+	@Autowired Seller seller;
 	Logger logger = LoggerFactory.getLogger(ThreadStarter.class);
 	
 	

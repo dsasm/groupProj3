@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.surf.dsasm.Rework.client.RestClientInteractor;
-import com.surf.dsasm.idk.App;
 
 import MetricApplier.SymbolVsMetricSortedList;
 import model.BoughtInfo;
@@ -43,7 +42,7 @@ public class ConsistentGradientSellConsiderer implements SellConsiderer{
 			Double currPrice = new Double(priceDiff);
 			while (currPrice == priceDiff) {
 				try {
-					Thread.sleep(10*1000/App.speed);
+					Thread.sleep(10*1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
